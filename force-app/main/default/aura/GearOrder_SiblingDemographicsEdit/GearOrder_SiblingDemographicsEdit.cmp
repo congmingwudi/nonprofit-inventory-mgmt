@@ -1,0 +1,189 @@
+<aura:component access="global" controller="GearOrderDemographicsController">
+    
+    <!-- input parameters --> 
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="modalTitle" type="String"/>
+    <aura:attribute name="demographic" type="Gear_Order_Demographic__c"/>
+
+    <!-- private attributes -->
+    <aura:attribute name="demographicLabel" type="String"/>
+    <aura:attribute name="siblingsList" type="List" default="[]"/>
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+    <aura:handler name="change" value="{!v.isLoading}" action="{!c.isLoadingChanged}"/>
+    
+    <!-- SIBLINGS TABLE attributes -->
+    <aura:attribute name="tableData" type="Object"/>
+    <aura:attribute name="tableColumns" type="List"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="sortedBy" type="String"/>
+    <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="defaultSortDirection" type="String"/>    
+    
+    <!-- THIS MODAL DIALOG --> 
+    <aura:if isTrue="{!v.isOpen}">
+               
+    	<div class="slds-m-around--xx-large">    	  
+            <div role="dialog" tabindex="-1" aria-labelledby="siblingsModalHeader" class="slds-modal slds-fade-in-open slds-modal_medium">
+                <div class="slds-modal__container">
+                    
+                    <!-- MODAL HEADER -->
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModal}">
+                            X <span class="slds-assistive-text">Close</span>
+                        </button>     
+                        <lightning:layout >
+                            <lightning:layoutItem padding="around-small">
+                                <lightning:icon iconName="standard:lead_list" alternativeText=""/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small">
+                                <h2 id="siblingsModalHeader" class="slds-text-heading--medium">{!v.modalTitle}</h2>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem flexibility="auto" padding="around-small">                                
+                                <div class="page-section page-header">
+                                    <h1 class="slds-text-heading--label">Child Demographic</h1>
+                                    <h2 class="slds-text-heading--small">{!v.demographicLabel}</h2>
+                                </div>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </div>
+                    
+                    <!--MODAL BODY -->
+                    <div class="slds-modal__content">                                           	                        
+                        
+                        <!-- SIBLINGS TABLE -->     
+                        <lightning:layout multipleRows="true">
+                            <lightning:layoutItem padding="around-small" size="12">       
+                                <lightning:card title="{!'SIBLINGS (' + v.siblingsList.length + ')'}">
+                                    <aura:set attribute="actions">
+                                        <lightning:button class="slds-button slds-button--brand" 
+                                            onclick="{!c.openSiblingModal_addSibling}">Add Sibling</lightning:button>
+                                    </aura:set>
+                    
+                                    <!-- the container element determine the height of the datatable -->
+                                    <div style="height: 300px" class="slds-scrollable">
+                                        <lightning:datatable aura:id="siblingsTable"
+                                                             data="{! v.tableData }"
+                                                             columns="{! v.tableColumns }"
+                                                             keyField="Name"
+                                                             hideCheckboxColumn="true"
+                                                             showRowNumberColumn="true"
+                                                             sortedBy="{! v.sortedBy }"
+                                                             sortedDirection="{! v.sortedDirection }"
+                                                             defaultSortDirection="{! v.defaultSortDirection }"
+                                                             onsort="{! c.updateColumnSorting }"
+                                                             onrowaction="{! c.handleRowAction }"
+                                                             class="slds-p-around_medium" />                                         
+                                    </div>
+                                    <aura:if isTrue="{! v.isLoading }">
+                                        <lightning:spinner alternativeText="Loading"/>
+                                    </aura:if>
+                                </lightning:card>
+                                
+                            </lightning:layoutItem>        
+                        </lightning:layout>
+                        <!-- / SIBLINGS TABLE -->                                                        
+                                                            
+                    </div>
+                    <!-- / MODAL BODY -->
+                    
+                    <!-- MODAL FOOTER -->
+                    <div class="slds-modal__footer">
+                        <lightning:button variant="neutral" onclick="{!c.closeModal}">Close</lightning:button>
+                	</div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+                     
+        </div>    
+    </aura:if>  	
+    <!-- END THIS MODAL DIALOG -->  
+
+ 	<!-- SIBLING DETAIL MODAL DIALOG attributes --> 
+    <aura:attribute name="isSiblingOpen" type="boolean" default="false"/>
+    <aura:attribute name="sibling_modalReopen" type="boolean" default="false"/>
+    <aura:attribute name="sibling_modalAction" type="String"/>
+    <aura:attribute name="sibling_modalTitle" type="String"/>   
+    <aura:attribute name="sibling" type="Gear_Order_Sibling_Demographic__c"/>
+    <aura:attribute name="sibling_readonly" type="Boolean" default="false"/>
+    <aura:attribute name="sibling_ageOptionList" type="List"/>
+    <aura:attribute name="sibling_genderOptionList" type="List"/>
+    
+    <!-- SIBLING DETAIL MODAL DIALOG --> 
+    <aura:if isTrue="{!v.isSiblingOpen}">
+               
+    	<div class="slds-m-around--xx-large">    	  
+            <div role="dialog" tabindex="-1" aria-labelledby="siblingModalHeader" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    
+                    <!-- MODAL HEADER -->
+                    <div class="slds-modal__header slds-theme_shade">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeSiblingModal}">
+                            X <span class="slds-assistive-text">Close</span>
+                        </button>     
+                        <lightning:layout >
+                            <lightning:layoutItem padding="around-small">
+                                <lightning:icon iconName="standard:lead_list" alternativeText=""/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small">
+                                <h2 id="siblingModalHeader" class="slds-text-heading--medium">{!v.sibling_modalTitle}</h2>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </div>
+                    
+                    <!--MODAL BODY -->
+                    <div class="slds-modal__content">                                           	                        
+
+                    	<lightning:layout>
+                                
+                            	<!-- gender -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="siblingGender" label="Sibling Gender"  
+                                        required="true" messageWhenValueMissing="Sibling Gender is required." 
+                                        value="{!v.sibling.Sibling_Gender__c}" disabled="{!v.sibling_readonly}">                  	
+                                        <aura:iteration items="{!v.sibling_genderOptionList}" var="gender">
+                                            <option text="{!gender.label}" value="{!gender.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select> 
+                                </lightning:layoutItem>
+                            
+                            	<!-- age -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="siblingAge" label="Sibling Age"  
+                                        required="true" messageWhenValueMissing="Sibling Age is required." 
+                                        value="{!v.sibling.Sibling_Age__c}" disabled="{!v.sibling_readonly}">                  	
+                                        <aura:iteration items="{!v.sibling_ageOptionList}" var="age">
+                                            <option text="{!age.label}" value="{!age.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                            
+                        </lightning:layout>
+                                                            
+                    </div>
+                    <!-- / MODAL BODY -->
+                    
+                    <!-- MODAL FOOTER -->
+                    <div class="slds-modal__footer">
+                        <lightning:button variant="neutral" onclick="{!c.closeSiblingModal}">Close</lightning:button>
+                        <aura:if isTrue="{!v.sibling_modalAction == 'create'}">
+                            <lightning:button aura:id="button_saveSibling" variant="brand" onclick="{!c.saveSiblingDemographic}">Save</lightning:button>
+							<lightning:button aura:id="button_saveAddAnotherSibling" variant="brand" onclick="{!c.saveSiblingDemographic}">Save &amp; Add Another</lightning:button>                    	
+                        </aura:if>
+                        <aura:if isTrue="{!v.sibling_modalAction == 'update'}">
+                        	<lightning:button variant="brand" onclick="{!c.saveSiblingDemographic}">Update</lightning:button>
+                    	</aura:if>
+                        <aura:if isTrue="{!v.sibling_modalAction == 'delete'}">
+                        	<lightning:button variant="brand" onclick="{!c.deleteSiblingDemographic}">Delete</lightning:button>
+                    	</aura:if>
+                	</div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+                     
+        </div>    
+    </aura:if>  	
+    <!-- END SIBLING DETAIL MODAL DIALOG --> 
+    
+</aura:component>

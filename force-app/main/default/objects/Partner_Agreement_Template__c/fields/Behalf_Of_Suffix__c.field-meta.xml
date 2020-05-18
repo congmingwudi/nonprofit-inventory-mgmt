@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Behalf_Of_Suffix__c</fullName>
+    <defaultValue>&quot;agree to the following terms and conditions:&quot;</defaultValue>
+    <externalId>false</externalId>
+    <label>Behalf Of Suffix</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

@@ -1,0 +1,52 @@
+<apex:component access="global" controller="GearOrder_EmailTemplate_Controller">
+	<apex:attribute assignTo="{!order}" name="gearOrder" type="Gear_Order__c" description="Gear Order"></apex:attribute>
+
+	<style type="text/css">
+	.dataTable {
+		border: 1px solid;
+	}
+    .dataTableHeader {
+        text-align: center;
+    }
+	.dataTableColumn {
+		border: 1px solid; padding: 4px;
+	}
+	.qtyTableColumn {
+		border: 1px solid; padding: 4px; text-align: center;
+	}
+    .innerDataTableColumn {
+		border: 1px dotted; padding: 4px;
+	}
+	</style>    
+    
+	<apex:dataTable value="{!OrderSummarizedByProduct}" var="productSummary" style="border: 1px solid;" width="1000px">
+		<apex:column style="border: 1px solid; padding: 4px;">
+            <apex:facet name="header"><div style="text-align: center;">Category</div></apex:facet>
+			{!productSummary.productCategory}
+		</apex:column>
+        <apex:column style="border: 1px solid; padding: 4px;">
+            <apex:facet name="header"><div style="text-align: center;">Product</div></apex:facet>
+			{!productSummary.productName}
+		</apex:column>
+        <apex:column style="border: 1px solid; padding: 4px; text-align: center;">
+			<apex:facet name="header">Quantity</apex:facet>
+			{!productSummary.quantity}
+		</apex:column>
+		<apex:column width="800px">
+            <apex:facet name="header"><div style="text-align: center;">Details</div></apex:facet>
+			<apex:dataTable value="{!productSummary.orderItemDetails}" var="orderItemDetail" style="border: 1px solid;" width="100%">
+                <apex:column style="border: 1px dotted; padding: 4px;" width="200px">
+                    <apex:outputText value="{!orderItemDetail.demographicDisplay}" escape="false"/>
+                </apex:column>
+                <apex:column style="border: 1px dotted; padding: 4px;" width="200px">
+                    <apex:outputText value="{!orderItemDetail.orderItemDisplay}" escape="false"/>
+                </apex:column>
+                <apex:column style="border: 1px dotted; padding: 4px;" width="200px">
+					<apex:outputText value="{!orderItemDetail.commentsDisplay}" escape="false"/>
+                </apex:column>
+            </apex:dataTable>
+		</apex:column>
+                
+	</apex:dataTable>
+
+</apex:component>

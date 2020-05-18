@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pickup_Gear_Coordinator_Required</fullName>
+    <active>true</active>
+    <description>Gear Coordinator field required</description>
+    <errorConditionFormula>ISBLANK(Gear_Coordinator__c)</errorConditionFormula>
+    <errorDisplayField>Gear_Coordinator__c</errorDisplayField>
+    <errorMessage>Gear Coordinator is required.</errorMessage>
+</ValidationRule>

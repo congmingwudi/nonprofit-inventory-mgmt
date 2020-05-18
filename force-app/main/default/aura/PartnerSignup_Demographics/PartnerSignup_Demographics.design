@@ -1,0 +1,10 @@
+<design:component>
+
+    <!-- input -->
+    <design:attribute name="accountID" label="Account ID" />
+    <design:attribute name="isExecutiveDirector" label="Current User is the Executive Director" />
+
+    <!-- output -->
+    <design:attribute name="navigation" label="Navigation" />
+
+</design:component>

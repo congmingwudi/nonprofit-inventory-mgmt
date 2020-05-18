@@ -1,0 +1,5 @@
+<design:component >
+	<design:attribute name="orderID" label="Order ID" />
+    <design:attribute name="useNavigation" label="Use Navigation" />
+    <design:attribute name="navigation" label="Navigation" />
+</design:component>

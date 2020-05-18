@@ -1,0 +1,97 @@
+<!--
+ - Created by ryan.cox on 2019-11-29.
+ -->
+
+<apex:page id="PartnerAgreementPDF" showHeader="false" standardController="Partner_Agreement__c"
+           standardStylesheets="false" renderAs="PDF">
+
+    <!-- in DRAFT if not signed -->
+    <apex:outputText rendered="{!IF(ISNULL(Partner_Agreement__c.Signature__c), true , false)}"
+                     style="color:red;font-weight:bold;font-size:small"
+                     value="DRAFT - NOT SIGNED BY PARTNER"/>
+    <br/>
+    <apex:outputText rendered="{!IF(Partner_Agreement__c.Status__c != 'Completed' && Partner_Agreement__c.Renewal__c == 'NEW', true , false)}"
+                     style="color:red;font-weight:bold;font-size:small"
+                     value="DRAFT - PARTNER NOT YET APPROVED"/>
+
+    <!-- header -->
+    <div style="text-align:center;font-weight:bold;font-size:1.5em">
+        <!-- logo -->
+        <apex:image url="{!$Resource.weecyclelogo1}"/> <br/>
+        <!-- title -->
+        <p>{!Partner_Agreement__c.Partner_Agreement_Template__r.Full_Title__c}</p>
+    </div>
+
+    <!-- body -->
+    <apex:outputfield value="{!Partner_Agreement__c.Partner_Agreement_Template__r.Before_Behalf_Of__c}"/>
+    <apex:outputText value="{!Partner_Agreement__c.Behalf_Of__c}" escape="false"/>
+    <apex:outputfield value="{!Partner_Agreement__c.Partner_Agreement_Template__r.Body__c}"/>
+
+    <!-- signatures -->
+    <table>
+        <tr>
+            <td width="50%">
+                <!-- partner signature -->                   
+                <apex:pageBlock rendered="{!IF(ISNULL(Partner_Agreement__c.Signature__c), true , false)}">
+                    SIGNATURE<br/><br/>                    
+                    <div style="color:red;font-weight:bold;font-size:big">
+                        PARTNER SIGNATURE<br/>
+                        WILL APPEAR HERE<br/><br/><br/><br/><br/><br/>
+                    </div>
+                </apex:pageBlock>
+
+                <apex:pageBlock rendered="{!IF(ISNULL(Partner_Agreement__c.Signature__c), false, true)}">                    
+                    <apex:outputLabel >SIGNATURE</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Signature__c}"/>
+                </apex:pageBlock>               
+            
+                <apex:panelGrid columns="2" cellpadding="3">        
+                    <apex:outputLabel >NAME</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Partner_Executive_Director__r.Name}"/>
+            
+                    <apex:outputLabel >AGENCY</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Partner__r.Name}"/>
+            
+                    <apex:outputLabel >DATE</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Date_Signed_By_Partner__c}"/>
+                </apex:panelGrid>
+            </td>
+            <td>
+                <!-- executive director signature -->
+                <apex:pageBlock rendered="{!IF(Partner_Agreement__c.Status__c != 'Completed' && Partner_Agreement__c.Renewal__c == 'NEW', true , false)}">
+                    SIGNATURE<br/><br/>
+                    <div style="color:red;font-weight:bold;font-size:big">
+                        EXECUTIVE DIRECTOR SIGNATURE<br/>
+                        WILL APPEAR HERE<br/>
+                        WHEN PARTNER IS APPROVED<br/><br/><br/><br/><br/>
+                    </div>
+                </apex:pageBlock>
+
+                <apex:pageBlock rendered="{!IF(Partner_Agreement__c.Status__c == 'Completed' || Partner_Agreement__c.Renewal__c == 'RENEW', true , false)}">
+                    <apex:outputLabel >SIGNATURE</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Executive_Director__r.Signature__c}"/>
+                </apex:pageBlock>                
+                
+                <apex:panelGrid columns="2" cellpadding="3">
+                    <apex:outputLabel >NAME</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Executive_Director__r.Name}"/>
+            
+                    <apex:outputLabel >TITLE</apex:outputLabel>
+                    {!$Organization.Name} Executive Director
+            
+                    <apex:outputLabel >DATE</apex:outputLabel>
+                    <apex:outputfield value="{!Partner_Agreement__c.Date_Signed_By_Executive_Director__c}"/>
+                </apex:panelGrid>            
+            </td>
+        </tr>
+    </table>
+  
+    <!-- footer -->
+    <div style="text-align:center;font-size:small">
+        <br/><br/>
+        <apex:outputText value="{!Partner_Agreement__c.Partner_Agreement_Template__r.Footer__c}"/><br/><br/>
+        {!$Organization.Name} * {!$Organization.Street} * {!$Organization.City}, {!$Organization.State} {!$Organization.PostalCode} * phone: {!$Organization.Phone} * {!$Organization.Division} 
+
+    </div>
+
+</apex:page>

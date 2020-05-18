@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Siblings__c</fullName>
+    <externalId>false</externalId>
+    <label>Siblings</label>
+    <summaryForeignKey>Gear_Order_Sibling_Demographic__c.Gear_Order_Demographic__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

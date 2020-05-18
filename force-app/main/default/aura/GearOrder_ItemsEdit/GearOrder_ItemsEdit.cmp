@@ -1,0 +1,311 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="GearOrderController">
+    
+    <!-- input parameters -->
+    <aura:attribute name="orderID" type="String" access="global" default=""/> 
+    <aura:attribute name="orderName" type="String" access="global" default=""/>     
+    <aura:attribute name="useNavigation" type="Boolean" access="global" default="true"/> 
+    
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/> 
+    
+    <!-- private attributes -->
+    <aura:attribute name="order" type="Gear_Order__c"/>
+    <aura:attribute name="orderItemList" type="List" default="[]"/>
+    <aura:attribute name="numOrderItemsForDemographic" type="Integer" default="0"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+    <aura:attribute name="screenInstructions" type="String" default="1) First select the child you would like to order items for on the drop down list below. 2) Next, add order items on to the order. 3) When you are finished with the first child on your order, select the next from the drop down and repeat the process. To go back and add additional children to the order, select 'Update Demographics'. To submit your order, press 'Submit Order'. At least one order item per child is required. There is no limit on the number of items you can request."/>
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/> 
+    <aura:handler name="change" value="{!v.isLoading}" action="{!c.isLoadingChanged}"/>
+    
+    <!-- HEADER -->
+    <lightning:layout class="slds-page-header">
+
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="Gear Order"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small"> 
+                <div class="slds-text-heading--label">Gear Order ({!v.order.Order_Status__c})</div>
+                <div class="slds-text-heading--medium">#{!v.order.Name}</div>
+        </lightning:layoutItem>
+        
+        <!-- demographics count -->
+        <lightning:layoutItem>
+            <div class="page-section page-header">
+                <div class="slds-text-heading--label">Demographics </div>
+                <div class="slds-text-heading--medium slds-text-align_center">{!v.demographicOptionList.length}</div>
+            </div>
+        </lightning:layoutItem>
+        
+        <!-- force spacing between layout items -->
+        <lightning:layoutItem> 
+            <h1 class="slds-text-heading--label">&nbsp; &nbsp;</h1>
+        </lightning:layoutItem>
+        
+        <!-- order items count -->
+        <lightning:layoutItem>
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label"> Order Items </h1>
+                <h2 class="slds-text-heading--medium slds-text-align_center">{!v.orderItemList.length}</h2>
+            </div>
+        </lightning:layoutItem>
+        
+  		<!-- guided instructions for this screen -->
+        <lightning:layoutItem size="6" flexibility="auto" padding="horizontal-small" class="slds-align_absolute-center">
+            <div class="slds-box slds-box_x-small screenInstructions">
+                <lightning:icon iconName="utility:info_alt" alternativeText="Order Form Help" size="x-small"/>
+                &nbsp;Instructions:
+                <ol class="slds-list--ordered">
+                    <li>First select the child you would like to order items for on the drop down list below.</li>
+                    <li>Next, add order items on to the order for child you have selected.</li>
+                    <li>When you are finished with the first child on your order, select the next from the drop down and repeat the process.</li>          
+                    <li>To go back and add additional children to the order, select 'Update Demographics'.</li>
+                    <li>At least one order item per child is required. There is no limit on the number of items you can request.</li>
+            	</ol>
+            </div>
+        </lightning:layoutItem>  
+        
+    </lightning:layout>
+    <!-- / HEADER --> 
+    
+    <!-- demographic selection -->
+    <aura:attribute name="isDemographicSelected" type="Boolean" default="false"/>
+    <aura:attribute name="demographicOptionList" type="List" default="[]"/>
+    <aura:attribute name="demographicID" type="String" default=""/> <!-- demographic selected -->
+ 	
+    <lightning:layout horizontalAlign="spread">
+        
+		<lightning:layoutItem flexibility="auto" padding="around-small">
+            <lightning:select aura:id="demographicSelection" name="demographicSelection" label="Child Demographic" required="true" 
+                    messageWhenValueMissing="Select Child Demographic to add order items." value="{!v.demographicID}"
+                    onchange="{!c.demographicSelected}">
+                    <aura:iteration items="{!v.demographicOptionList}" var="option">
+                        <option text="{!option.label}" value="{!option.Id}" selected="{!option.selected}"></option>
+                    </aura:iteration>
+            </lightning:select>
+        </lightning:layoutItem>
+        
+        <!-- error message -->
+        <aura:if isTrue="{!v.errorMessage != ''}">
+        	<lightning:layoutItem flexibility="auto" padding="around-small" class="slds-align_absolute-center">
+            	<ui:outputText value="{!v.errorMessage}" class="errorMessage"/>
+            </lightning:layoutItem>
+    	</aura:if> 
+        
+    </lightning:layout>
+    
+    <!-- table attributes -->
+    <aura:attribute name="tableData" type="Object"/>
+    <aura:attribute name="tableColumns" type="List"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="sortedBy" type="String"/>
+    <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="defaultSortDirection" type="String"/>
+    
+    <!-- ORDER ITEMS TABLE -->
+    <aura:if isTrue="{!v.isDemographicSelected}">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-small" size="12">       
+                <lightning:card title="{!'ORDER ITEMS FOR CHILD (' + v.numOrderItemsForDemographic + ')'}">
+                    <aura:set attribute="actions">
+                        <lightning:button class="slds-button slds-button--brand" 
+                            onclick="{!c.openModel_AddOrderItem}">Add Order Item</lightning:button>
+                    </aura:set>
+    
+                    <!-- the container element determine the height of the datatable -->
+                    <div style="height: 300px" class="slds-scrollable">
+                        <lightning:datatable data="{! v.tableData }"
+                                             columns="{! v.tableColumns }"
+                                             keyField="Name"
+                                             onrowselection="{! c.getSelectedName }"
+                                             hideCheckboxColumn="true"
+                                             showRowNumberColumn="true"
+                                             sortedBy="{! v.sortedBy }"
+                                             sortedDirection="{! v.sortedDirection }"
+                                             defaultSortDirection="{! v.defaultSortDirection }"
+                                             onsort="{! c.updateColumnSorting }"
+                                             onrowaction="{! c.handleRowAction }"
+                                             class="slds-p-around_medium" />                                         
+                    </div>
+                    <aura:if isTrue="{! v.isLoading }">
+                        <lightning:spinner alternativeText="Loading"/>
+                    </aura:if>
+                </lightning:card>
+                
+            </lightning:layoutItem>        
+        </lightning:layout>
+    </aura:if>
+    <!-- / ORDER ITEMS TABLE --> 
+    
+    <lightning:layout horizontalAlign="stretch">
+    	<!-- comments / special requests -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+        	<lightning:textarea aura:id="order_comment" name="order_comment" label="Gear Order Comments / Special Requests"
+            	required="false" maxlength="255" messageWhenTooLong="A maximum of 255 characters are allowed."
+            	value="{!v.order.Comment__c}" onblur="{! c.saveOrderComment }" />                                
+        </lightning:layoutItem> 
+    </lightning:layout>
+    
+    <!-- modal attributes --> 
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="orderItem_modalReopen" type="boolean" default="false"/>
+    <aura:attribute name="orderItem_modalAction" type="String"/>
+    <aura:attribute name="orderItem_modalTitle" type="String"/>
+    <aura:attribute name="orderItem_productOptionList" type="List"/>
+    <aura:attribute name="isCategory" type="Boolean" default="false"/>
+    <aura:attribute name="orderItem_errors" type="List"/>
+    <aura:attribute name="orderItem_quantityLabel" type="String"/>
+    <aura:attribute name="orderItem" type="Gear_Order_Item__c"/>
+    <aura:attribute name="orderItem_readonly" type="Boolean" default="false"/>
+    <aura:attribute name="isClothing" type="Boolean" default="false"/>
+    <aura:attribute name="isDiapers" type="Boolean" default="false"/>
+    <aura:attribute name="isSwimDiapers" type="Boolean" default="false"/>
+    <aura:attribute name="orderItem_seasonOptionList" type="List" default="[]"/>
+    <aura:attribute name="orderItem_clothingSizeOptionList" type="List" default="[]"/>
+    <aura:attribute name="orderItem_diaperSizeOptionList" type="List" default="[]"/>
+        
+    <!-- MODAL DIALOG --> 
+    <aura:if isTrue="{!v.isOpen}">                
+    	<div class="slds-m-around--xx-large">    	  
+            <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    
+                    <!-- MODAL HEADER -->
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModel}">
+                            X <span class="slds-assistive-text">Close</span>
+                        </button>     
+                        <lightning:layout >
+                            <lightning:layoutItem padding="around-small">
+                                <lightning:icon iconName="standard:lead_list" alternativeText=""/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small">
+                                <h2 id="header99" class="slds-text-heading--medium">{!v.orderItem_modalTitle}</h2>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </div>
+                    
+                    <!--MODAL BODY -->
+                    <div class="slds-modal__content slds-p-around--medium">
+                    	
+                        <lightning:layout horizontalAlign="spread" multipleRows="true">
+                            
+                            <!-- product -->
+                            <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                            	<lightning:select aura:id="orderItem_product" label="Product" required="true" 
+                                	messageWhenValueMissing="Product is required." value="{!v.orderItem.Product__c}"
+                                	onchange="{!c.productSelected}" disabled="{!v.orderItem_readonly}">
+                                	<aura:iteration items="{!v.orderItem_productOptionList}" var="product">
+                                		<option text="{!product.label}" value="{!product.Id}" selected="{!product.selected}"></option>
+                                 	</aura:iteration>
+                                </lightning:select>
+                                        
+                            </lightning:layoutItem>
+                            
+                            <!-- quantity (readonly) -->
+                            <aura:if isTrue="{!v.isCategory == false}">
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                     <lightning:input aura:id="orderItem_quantity" label="{!v.orderItem_quantityLabel}" type="number" value="{!v.orderItem.Quantity__c}" disabled="true" />
+                                </lightning:layoutItem>                                
+                            </aura:if>
+                            
+                        </lightning:layout>
+                                                
+                        <aura:if isTrue="{!v.isCategory == false}">
+                            <lightning:layout horizontalAlign="stretch">
+                                <!-- comment / special requests -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                	<lightning:textarea aura:id="orderItem__comment" label="Comments / Special Requests"
+                                    	required="false" maxlength="255" messageWhenTooLong="A maximum of 255 characters are allowed."
+                                    	value="{!v.orderItem.Comment__c}" disabled="{!v.orderItem_readonly}" />                                
+                                </lightning:layoutItem> 
+                            </lightning:layout>
+                        </aura:if>
+                            
+                        <aura:if isTrue="{!v.isClothing}">
+                            <lightning:layout horizontalAlign="spread">
+                                    
+                                <!-- season -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="orderItem_season" label="Season" value="{!v.orderItem.Season__c}">
+                                        <aura:iteration items="{!v.orderItem_seasonOptionList}" var="season">
+                                            <option text="{!season.label}" value="{!season.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                    
+                                <!-- clothingSize -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small">    
+                                    <lightning:select aura:id="orderItem_clothingSize" label="Clothing Size" value="{!v.orderItem.Clothing_Size__c}">
+                                        <aura:iteration items="{!v.orderItem_clothingSizeOptionList}" var="clothingSize">
+                                            <option text="{!clothingSize.label}" value="{!clothingSize.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select> 
+                                </lightning:layoutItem>
+                                
+                                <!-- for spacing -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small"></lightning:layoutItem>
+                                <lightning:layoutItem flexibility="auto" padding="around-small"></lightning:layoutItem>
+                                
+                            </lightning:layout>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.isDiapers}">
+                            <lightning:layout horizontalAlign="spread">
+                                
+                                <!-- diaperSize -->
+                                <lightning:layoutItem flexibility="auto" padding="around-small">  
+                                    <lightning:select aura:id="orderItem_diaperSize" label="Diaper Size" value="{!v.orderItem.Diaper_Size__c}">
+                                        <aura:iteration items="{!v.orderItem_diaperSizeOptionList}" var="diaperSize">
+                                            <option text="{!diaperSize.label}" value="{!diaperSize.value}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                
+                            </lightning:layout>   
+                        </aura:if>
+                        
+                    </div>
+                    <!-- / MODAL BODY -->
+                    
+                    <!-- MODAL FOOTER -->
+                    <div class="slds-modal__footer">
+                        <lightning:button variant="neutral" onclick="{!c.closeModel}">Cancel</lightning:button>
+                        <aura:if isTrue="{!v.isCategory == false}">
+                            <aura:if isTrue="{!v.orderItem_modalAction == 'create'}">
+                                <lightning:button aura:id="button_saveOrderItem" variant="brand" onclick="{!c.saveOrderItem}">Save</lightning:button>
+								<lightning:button aura:id="button_saveAddAnotherOrderItem" variant="brand" onclick="{!c.saveOrderItem}">Save &amp; Add Another</lightning:button>                    	
+                            </aura:if>
+                            <aura:if isTrue="{!v.orderItem_modalAction == 'update'}">
+                                <lightning:button variant="brand" onclick="{!c.saveOrderItem}">Update</lightning:button>
+                            </aura:if>
+                        </aura:if>    
+                        <aura:if isTrue="{!v.orderItem_modalAction == 'delete'}">
+                        	<lightning:button variant="brand" onclick="{!c.deleteOrderItem}">Delete</lightning:button>
+                    	</aura:if>
+                	</div>
+                    <!-- / MODAL FOOTER -->
+                    
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+                     
+        </div>    
+    </aura:if>  	
+    <!-- END MODAL DIALOG -->      
+
+    <!-- NAVIGATION BUTTONS -->
+    <aura:if isTrue="{!v.useNavigation}">
+        <div class="slds-float--right slds-p-top_large slds-p-bottom_large">
+            <lightning:button label="Cancel Order" aura:id="nav_cancelOrder" 
+                    variant="neutral" onclick="{!c.handleNavigation}"/>
+            <lightning:button label="Update Demographics" aura:id="nav_updateDemographics" 
+                    variant="neutral" onclick="{!c.handleNavigation}"/>
+            <lightning:button label="Preferred Pickup Times >>" aura:id="nav_pickupTimes" 
+                    variant="brand" onclick="{!c.handleNavigation}"/>
+        </div>
+    </aura:if>
+    
+</aura:component>

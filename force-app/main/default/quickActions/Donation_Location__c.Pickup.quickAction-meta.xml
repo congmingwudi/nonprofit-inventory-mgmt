@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Create a Pickup</description>
+    <fieldOverrides>
+        <field>Gear_Coordinator__c</field>
+        <formula>$User.Id</formula>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Name</field>
+        <formula>&quot;(&quot; + TEXT(MONTH(TODAY())) + &quot;/&quot; + TEXT(DAY(TODAY())) + &quot;/&quot; + TEXT(YEAR(TODAY())) + &quot;)&quot; + &quot; &quot; + Donation_Location__c.Name</formula>
+    </fieldOverrides>
+    <fieldOverrides>
+        <field>Pickup_Date__c</field>
+        <formula>NOW()</formula>
+    </fieldOverrides>
+    <label>Pickup</label>
+    <optionsCreateFeedItem>true</optionsCreateFeedItem>
+    <quickActionLayout>
+        <layoutSectionStyle>TwoColumnsLeftToRight</layoutSectionStyle>
+        <quickActionLayoutColumns>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Name</field>
+                <uiBehavior>Required</uiBehavior>
+            </quickActionLayoutItems>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Pickup_Date__c</field>
+                <uiBehavior>Required</uiBehavior>
+            </quickActionLayoutItems>
+            <quickActionLayoutItems>
+                <emptySpace>false</emptySpace>
+                <field>Gear_Coordinator__c</field>
+                <uiBehavior>Edit</uiBehavior>
+            </quickActionLayoutItems>
+        </quickActionLayoutColumns>
+        <quickActionLayoutColumns/>
+    </quickActionLayout>
+    <targetObject>Pickup__c</targetObject>
+    <targetParentField>Donation_Location__c</targetParentField>
+    <type>Create</type>
+</QuickAction>

@@ -1,0 +1,18 @@
+<aura:component >
+    
+    <!-- handlers -->
+	<aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <!-- attributes -->
+    <aura:attribute name="productMap" type="Map" default="{}"/>
+    <aura:attribute name="category" type="String"/>
+    <aura:attribute name="productList" type="Product__c[]"/>
+    
+    <!-- card -->
+	<lightning:card title="{!v.category}" iconName="standard:scan_card">
+        <aura:iteration items="{!v.productList}" var="product">
+            <c:ProductListItem product="{!product}"/>
+        </aura:iteration>    
+    </lightning:card>
+
+</aura:component>

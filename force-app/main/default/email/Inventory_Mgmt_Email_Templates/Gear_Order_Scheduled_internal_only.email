@@ -1,0 +1,56 @@
+<messaging:emailTemplate subject="PRINT: {!$Organization.Name} Gear Order Scheduled (#{!relatedTo.Name} for Partner: {!relatedTo.Partner_Organization__r.Name})" 
+   replyTo="{!$Organization.Division}"
+   recipientType="Contact" 
+   relatedToType="Gear_Order__c">
+   
+  <messaging:htmlEmailBody >
+    <html>
+      <body>       
+        <font face="arial" size="2">
+        
+        <p>Gear Order scheduled for pick up on   
+            <font style="font-weight: bold;">
+            <c:DateTimeFormat dateTime_value="{!relatedTo.Order_Ready__c}" dateTime_format="EEE MMM d, yyyy 'at' hh:mm a z" dateTime_zone="EST"/>.
+            </font>
+        </p>
+               
+        <table>
+            <tr>
+                <td style="vertical-align: text-top; padding: 10px; border: 1px solid">
+                  <p style="font-size: 14px; font-weight: bold; background: #FFFFFF; padding: 5px;">Gear Order</p>
+                  <p>Order Number: {!relatedTo.Name}</p>
+                  <p>Order Date: 
+                      <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!relatedTo.Order_Submitted__c}" />
+                      </apex:outputText>
+                  </p>           
+                  <p>Comments / Special Requests: {!relatedTo.Comment__c}</p>
+                </td>               
+                <td style="vertical-align: text-top; padding: 10px; border: 1px solid">  
+                  <p style="font-size: 14px; font-weight: bold; background: #FFFFFF; padding: 5px;"><b>Partner Organization</b></p>         
+                  <p>Organization Name: {!relatedTo.Partner_Organization__r.Name}</p>  
+                  <p>Contact Name: {!relatedTo.Order_Contact__r.Name}</p> 
+                  <p>Email: {!relatedTo.Order_Contact__r.Email}</p>
+                  <p>Mobile Phone: {!relatedTo.Order_Contact__r.MobilePhone}</p>            
+                </td>
+                <td style="vertical-align: text-top; padding: 10px; border: 1px solid">                                  
+                  <p style="font-size: 14px; font-weight: bold; background: #FFFFFF; padding: 5px;"><b>Demographics</b></p>          
+                  <p># of Families Served: {!Text(relatedTo.Num_Families_Served__c)}</p>
+                  <p># of Children Served: {!Text(relatedTo.Num_Children_Served__c)}</p>
+                </td>
+            </tr>
+        </table>
+
+        <p></p>
+         
+        <c:GearOrder_EmailTemplate_Controller gearOrder="{!relatedTo}" />
+                      
+        </font>
+      </body>
+    </html>
+  </messaging:htmlEmailBody> 
+  <messaging:plainTextEmailBody >
+
+             
+  </messaging:plainTextEmailBody>  
+</messaging:emailTemplate>

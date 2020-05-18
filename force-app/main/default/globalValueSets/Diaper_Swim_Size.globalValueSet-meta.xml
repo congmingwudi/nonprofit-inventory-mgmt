@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Small 16-26#</fullName>
+        <default>false</default>
+        <label>Small 16-26#</label>
+    </customValue>
+    <customValue>
+        <fullName>Medium 24-34#</fullName>
+        <default>false</default>
+        <label>Medium 24-34#</label>
+    </customValue>
+    <customValue>
+        <fullName>Large 32 lbs +</fullName>
+        <default>false</default>
+        <label>Large 32 lbs +</label>
+    </customValue>
+    <customValue>
+        <fullName>pull-ups 2T-3T</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>pull-ups 2T-3T</label>
+    </customValue>
+    <customValue>
+        <fullName>pull-ups 3T-4T</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>pull-ups 3T-4T</label>
+    </customValue>
+    <customValue>
+        <fullName>pull-ups 4T-5T</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>pull-ups 4T-5T</label>
+    </customValue>
+    <masterLabel>Diaper (Swim) Size</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

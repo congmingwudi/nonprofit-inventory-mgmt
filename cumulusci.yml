@@ -1,0 +1,21 @@
+minimum_cumulusci_version: '3.12.2'
+project:
+    name: nonprofit-inventory-mgmt
+    package:
+        name:  nonprofit-inventory-mgmt
+        api_version: '48.0'
+    dependencies:
+        - github: 'https://github.com/SalesforceFoundation/NPSP'
+    source_format: sfdx
+
+tasks:
+    robot:
+        options:
+            suites: robot/nonprofit-inventory-mgmt/tests
+            options:
+                outputdir: robot/nonprofit-inventory-mgmt/results
+
+    robot_testdoc:
+        options:
+            path: robot/nonprofit-inventory-mgmt/tests
+            output: robot/nonprofit-inventory-mgmt/doc/nonprofit-inventory-mgmt_tests.html

@@ -1,0 +1,21 @@
+<!--
+ - Created by ryan.cox on 2019-09-18.
+ -->
+
+<design:component>
+
+    <!-- input parameters -->
+    <design:attribute name="accountID" label="Account ID" />
+    <design:attribute name="renewal" label="NEW or RENEW" />
+
+    <!-- input/output parameters -->
+    <design:attribute name="account" label="Account" />
+    <design:attribute name="primaryContact" label="Primary Contact" />
+    <design:attribute name="executiveDirector" label="Executive Director" />
+    <design:attribute name="isExecutiveDirector" label="Current User is the Executive Director" />
+
+    <!-- output parameters -->
+    <design:attribute name="navigation" label="Navigation" />
+    <design:attribute name="deviceType" label="Device Type" />
+
+</design:component>

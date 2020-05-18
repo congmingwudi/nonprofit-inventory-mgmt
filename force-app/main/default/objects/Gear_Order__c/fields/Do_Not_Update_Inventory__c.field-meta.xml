@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Do_Not_Update_Inventory__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Don&#39;t update product items in inventory</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Don&#39;t update product items in inventory</inlineHelpText>
+    <label>Don&#39;t Update Inventory</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

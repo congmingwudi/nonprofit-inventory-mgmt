@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pickup_Line_Item_Quantity_or_Weight</fullName>
+    <active>true</active>
+    <description>Either Quantity or Weight must be entered.</description>
+    <errorConditionFormula>(ISBLANK(Quantity__c) || (Quantity__c  = 0))
+&amp;&amp; (ISBLANK(Weight__c) ||(Weight__c = 0))</errorConditionFormula>
+    <errorMessage>Either a quantity or a weight is required. If a weight is entered, then quantity is calculated based on weight divided by the product weight.</errorMessage>
+</ValidationRule>

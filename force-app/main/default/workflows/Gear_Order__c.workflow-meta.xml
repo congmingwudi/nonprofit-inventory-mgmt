@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Gear_Order_Confirmed</fullName>
+        <ccEmails>ryan.cox@salesforce.com</ccEmails>
+        <description>Gear Order Confirmed</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Order_Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>ryan.cox@salesforce.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Inventory_Mgmt_Email_Templates/Gear_Order_Confirmed</template>
+    </alerts>
+    <alerts>
+        <fullName>Gear_Order_Confirmed_internal_only</fullName>
+        <description>Gear Order Confirmed (internal only)</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>test-xttdrst3k7es@example.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>ryan.cox@salesforce.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Inventory_Mgmt_Email_Templates/Gear_Order_Confirmed_internal_only</template>
+    </alerts>
+    <alerts>
+        <fullName>Gear_Order_Reminder</fullName>
+        <description>Gear Order Reminder</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Order_Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>ryan.cox@salesforce.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Inventory_Mgmt_Email_Templates/Gear_Order_Pickup_Reminder</template>
+    </alerts>
+    <alerts>
+        <fullName>Gear_Order_Scheduled</fullName>
+        <ccEmails>ryan.cox@salesforce.com</ccEmails>
+        <description>Gear Order Scheduled</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Order_Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>ryan.cox@salesforce.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Inventory_Mgmt_Email_Templates/Gear_Order_Scheduled</template>
+    </alerts>
+    <alerts>
+        <fullName>Gear_Order_Scheduled_internal_only</fullName>
+        <description>Gear Order Scheduled (internal only)</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>test-xttdrst3k7es@example.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>ryan.cox@salesforce.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Inventory_Mgmt_Email_Templates/Gear_Order_Scheduled_internal_only</template>
+    </alerts>
+    <alerts>
+        <fullName>Gear_Order_Submitted</fullName>
+        <ccEmails>ryan.cox@salesforce.com</ccEmails>
+        <description>Gear Order Submitted</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Order_Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>ryan.cox@salesforce.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Inventory_Mgmt_Email_Templates/Gear_Order_Submitted</template>
+    </alerts>
+</Workflow>

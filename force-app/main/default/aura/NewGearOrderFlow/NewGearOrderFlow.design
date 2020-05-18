@@ -1,0 +1,3 @@
+<design:component>
+	<design:attribute name="currentStageIndex" label="In:Current Stage Index" description="index to the current flow stage"/> 
+</design:component>

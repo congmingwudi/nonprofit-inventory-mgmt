@@ -1,0 +1,11 @@
+<!--
+ - Created by ryan.cox on 2/6/20.
+ -->
+
+<design:component>
+
+    <!-- input -->
+    <design:attribute name="accountID" label="Account ID" />
+    <design:attribute name="renewal" label="NEW or RENEW" />
+
+</design:component>

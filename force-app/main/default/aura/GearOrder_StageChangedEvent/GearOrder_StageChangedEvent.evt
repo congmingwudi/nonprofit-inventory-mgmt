@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="indicates a New Gear Order flow stage change">
+    <aura:attribute name="currentStageIndex" type="Integer"/>
+</aura:event>

@@ -1,0 +1,13 @@
+<design:component>
+
+    <!-- input -->
+    <design:attribute name="partnerAgreementName" label="Partner Agreement Name" />
+    <design:attribute name="partnerAgreementType" label="Partner Agreement Type (Agreement or Waiver)" />
+    <design:attribute name="renewal" label="NEW or RENEW" />
+    <design:attribute name="submitButtonLabel" label="Submit Button Label" default="Submit Enrollment" />
+
+    <!-- output -->
+    <design:attribute name="navigation" label="Navigation" />
+    <design:attribute name="partnerAgreementID" label="Partner Agreement ID" />
+
+</design:component>

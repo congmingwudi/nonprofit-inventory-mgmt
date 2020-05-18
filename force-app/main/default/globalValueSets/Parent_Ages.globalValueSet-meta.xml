@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Unknown</fullName>
+        <default>true</default>
+        <label>Unknown</label>
+    </customValue>
+    <customValue>
+        <fullName>&lt; 18</fullName>
+        <default>false</default>
+        <label>&lt; 18</label>
+    </customValue>
+    <customValue>
+        <fullName>&gt;= 18</fullName>
+        <default>false</default>
+        <label>&gt;= 18</label>
+    </customValue>
+    <masterLabel>Parent Ages</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

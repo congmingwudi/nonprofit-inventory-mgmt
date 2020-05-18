@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Value_of_Items__c</fullName>
+    <description>$ value of fulfilled items</description>
+    <externalId>false</externalId>
+    <inlineHelpText>$ value of fulfilled items</inlineHelpText>
+    <label>Value of Items</label>
+    <summarizedField>Gear_Order_Item__c.Value__c</summarizedField>
+    <summaryForeignKey>Gear_Order_Item__c.Gear_Order__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

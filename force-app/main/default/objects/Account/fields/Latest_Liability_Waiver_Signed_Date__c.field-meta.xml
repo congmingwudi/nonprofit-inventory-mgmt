@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Latest_Liability_Waiver_Signed_Date__c</fullName>
+    <externalId>false</externalId>
+    <formula>Latest_Liability_Waiver__r.Date_Signed_By_Partner__c</formula>
+    <label>Latest Liability Waiver Signed Date</label>
+    <required>false</required>
+    <type>DateTime</type>
+</CustomField>

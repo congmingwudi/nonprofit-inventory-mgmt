@@ -1,0 +1,16 @@
+.THIS .screenInstructions {
+    background-color: #FFFFFF;
+}
+
+.THIS .errorMessage {
+	font-weight: bold;
+	color: #ff0000;
+	padding: 10px;
+	border: 1px solid #ff0000;
+}
+
+.THIS .helptext {
+	position: absolute;
+	right: 8%;
+	bottom: 65%;
+}

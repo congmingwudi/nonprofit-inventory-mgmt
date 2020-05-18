@@ -1,0 +1,118 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" access="global" controller="GearOrderController">
+
+    <!--
+    this component was originally built for entering demographic percentages in order to generate bulk demographics for a Gear Order
+    then later was modified to accommodate creating and managing the demographic percentages served for partner accounts
+    -->
+
+    <!-- input parameters -->
+    <aura:attribute name="recordId" type="String" access="global" default=""/> <!-- this is the recordId of either a Gear_Order__c or a partner Account -->
+    <aura:attribute name="orderName" type="String" access="global" default=""/> <!-- optional alternative for recordId for a Gear Order -->
+    <aura:attribute name="isAccount" type="Boolean" access="global" default="false"/> <!-- indicates recordId is for an Account -->
+
+    <!-- attribute read by parent component to check required fields -->
+    <aura:attribute name="accountID" type="String"/>
+    <aura:attribute name="total_PercentFamiliesServed" access="global" type="Integer" default="0"/>
+    <aura:attribute name="numFamiliesServed" access="global" type="Integer"/>
+    <aura:attribute name="demographicsTableData" type="Object"/>
+    <aura:attribute name="isUpdate" type="Boolean" default="false"/>
+
+    <!-- attribute that can be set by parent component to indicate an error -->
+    <aura:attribute name="errorMessage" type="String" access="global" default=""/>
+
+    <!-- private attributes -->
+    <aura:attribute name="isGearOrder" type="Boolean" default="false"/>
+    <aura:attribute name="order" type="Gear_Order__c"/>
+    <aura:attribute name="account" type="Account"/>
+    <aura:attribute name="raceEthnicityOptionList" type="List" default="[]"/>
+    <aura:attribute name="numFamiliesServedLabel" type="String"/>
+    <aura:attribute name="demographicsCreated" type="Boolean" default="false"/>
+       
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/> 
+    
+    <!-- table attributes -->
+    <aura:attribute name="tableHeight" type="String"/>
+    <aura:attribute name="tableColumns" type="List"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="sortedBy" type="String"/>
+    <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="defaultSortDirection" type="String"/>
+    <aura:attribute name="tableErrors" type="Object"/>
+    
+    <!-- CARD -->
+    <lightning:card>
+        <aura:set attribute="title">
+            <aura:if isTrue="{!v.isGearOrder == true}">
+                <h1 class="slds-align_absolute-center">ENTER BULK DEMOGRAPHICS</h1>
+            </aura:if>
+        </aura:set>
+        <aura:set attribute="footer">
+            <aura:if isTrue="{!v.isGearOrder == true}">
+                <aura:if isTrue="{!v.demographicsCreated == false}">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.closeModel}">Cancel</button>
+                    <button class="slds-button slds-button--brand" onclick="{!c.createDemographics}">Create Demographics</button>
+                </aura:if>
+                <aura:if isTrue="{!v.demographicsCreated == true}">
+                    <ui:outputText value="Demographics created" class="successMessage"/>
+                    <button class="slds-button slds-button--brand" onclick="{!c.closeModel}">Close</button>
+                </aura:if>
+            </aura:if>
+        </aura:set>
+                    
+    <lightning:layout horizontalAlign="stretch">
+        <!-- # families served -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+            <lightning:input aura:id="Num_Families_Served" name="Num_Families_Served" label="{!v.numFamiliesServedLabel}" type="number"
+                             value="{!v.numFamiliesServed}" onblur="{! c.handleNumFamiliesServedChanged }"
+                             required="true" messageWhenValueMissing="# Children Served is required."/>
+        </lightning:layoutItem>
+        
+        <!-- total % -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+            <lightning:input aura:id="Total_PercentFamiliesServed" name="Total_PercentFamiliesServed" label="Total % Children Served"
+                             type="percent" value="{!v.total_PercentFamiliesServed}" disabled="true" />
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <aura:if isTrue="{!v.errorMessage != ''}">
+        <lightning:layout horizontalAlign="space">
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+                <ui:outputText value="{!v.errorMessage}" class="errorMessage"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </aura:if>
+    
+    <!-- DEMOGRAPHICS TABLE -->     
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem padding="around-small" size="12">       
+
+                <!-- the container element determines the height of the datatable -->
+                <div style="{! 'height:' + v.tableHeight + ';'}">
+                    <lightning:datatable aura:id="demographicsTable"
+                                         data="{! v.demographicsTableData }"
+                                         columns="{! v.tableColumns }"
+                                         keyField="RaceEthnicity"
+                                         hideCheckboxColumn="true"
+                                         showRowNumberColumn="false"
+                                         sortedBy="{! v.sortedBy }"
+                                         sortedDirection="{! v.sortedDirection }"
+                                         defaultSortDirection="{! v.defaultSortDirection }"
+                                         onsort="{! c.updateColumnSorting }"
+                                         onsave="{! c.handleSave }"
+                                         errors="{!v.errors}"
+                                         class="slds-p-around_medium" />                                         
+                </div>
+
+                <aura:if isTrue="{! v.isLoading }">
+                    <lightning:spinner alternativeText="Loading"/>
+                </aura:if>
+            
+        </lightning:layoutItem>        
+    </lightning:layout>
+    <!-- / DEMOGRAPHICS TABLE --> 
+    
+    </lightning:card>
+    <!-- / CARD -->
+    
+</aura:component>

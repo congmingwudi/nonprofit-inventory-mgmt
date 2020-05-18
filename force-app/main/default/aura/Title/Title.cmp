@@ -1,0 +1,16 @@
+<!--
+ - Created by ryan.cox on 2019-09-18.
+ -->
+
+<aura:component description="Title" implements="lightning:availableForFlowScreens" access="global">
+
+    <!-- input parameters -->
+    <aura:attribute name="titleText" type="String" access="global" default="Community Partner Waitlist"/>
+
+    <div style="font-size: 1.1em">
+
+        <div class="title slds-text-align_center slds-text-heading_large slds-p-horizontal--large slds-p-bottom--small">{!v.titleText}</div>
+
+    </div>
+
+</aura:component>

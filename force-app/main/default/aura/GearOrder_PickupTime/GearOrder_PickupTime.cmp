@@ -1,0 +1,233 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="GearOrderController">
+    
+    <!-- input parameters -->
+    <aura:attribute name="orderID" type="String" access="global" default=""/> 
+    <aura:attribute name="orderName" type="String" access="global" default=""/> 
+    <aura:attribute name="useNavigation" type="Boolean" access="global" default="true"/> 
+    
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/> 
+    
+    <!-- private attributes -->
+    <aura:attribute name="order" type="Gear_Order__c"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+        <!-- attributes for handling preferred pickup dates and times -->
+    <aura:attribute name="numDates" type="Integer" default="3"/> <!-- number of order pickup dates in the future to list on the gear order form for picking preferred pickup dates -->
+    <aura:attribute name="days" type="List"/>
+    <aura:attribute name="pickup_dateList" type="List"/>
+    <aura:attribute name="pickup_timeList" type="List"/>
+    <aura:attribute name="pickup_timeDefault" type="String"/>
+    <aura:attribute name="pickup_readonly" type="Boolean"/>
+    <aura:attribute name="pickup_timeZone" type="String" default="America/Denver"/>
+    <aura:attribute name="pickup_date1" type="String"/>
+    <aura:attribute name="pickup_time1" type="String"/>
+    <aura:attribute name="pickup_date2" type="String"/>
+    <aura:attribute name="pickup_time2" type="String"/>
+    <aura:attribute name="noTimesWork" type="Boolean" default="false"/>
+    <aura:attribute name="noTimesWorkDisabled" type="Boolean" default="false"/>
+    <aura:attribute name="noTimesWorkComment" type="String" default=""/>
+     
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+    
+    <!-- HEADER -->
+    <lightning:layout class="slds-page-header">
+
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="Gear Order"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small"> 
+                <div class="slds-text-heading--label">Gear Order ({!v.order.Order_Status__c})</div>
+                <div class="slds-text-heading--medium">#{!v.order.Name}</div>
+        </lightning:layoutItem>
+       
+  		<!-- guided instructions for this screen -->
+        <lightning:layoutItem size="8" flexibility="auto" padding="horizontal-small" class="slds-align_absolute-center">
+            <div class="slds-box slds-box_x-small screenInstructions">
+                <lightning:icon iconName="utility:info_alt" alternativeText="Order Form Help" size="x-small"/>
+                &nbsp;Instructions:
+                <ol class="slds-list--ordered">
+                    <li>Choose two preferred pickup times for the next two upcoming Thursdays. For a large order, please choose a later pickup time.</li>
+                    <li>If none of the designated pickup times work for you, select the 'Contact Me!" checkbox and optionally enter a comment.</li>
+                	<li>Press 'Submit Order' to submit your order, or 'Update Order Items' to go back and change your order.</li>
+                </ol>
+        	</div>
+        </lightning:layoutItem>      
+        
+    </lightning:layout>
+    <!-- / HEADER --> 
+  
+	<lightning:layout horizontalAlign="space" multipleRows="true">
+        
+        <!-- first preferred pickup time -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+            <lightning:card title="1st Preferred Pickup Time" class="slds-card_boundary">
+
+                <lightning:layout horizontalAlign="space">
+
+                    <!-- pickup date -->
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                        <lightning:select aura:id="pickupDate" label="Date" disabled="{!v.noTimesWork}"
+                            required="false" value="{!v.pickup_date1}">
+                            <aura:iteration items="{!v.pickup_dateList}" var="date">
+                                <option text="{!date.label}" value="{!date.id}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+
+                    </lightning:layoutItem>
+                    <!-- end pickup date -->
+
+                    <!-- pickup time -->
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                        <lightning:select aura:id="pickupTime" label="Time" disabled="{!v.noTimesWork}"
+                            required="false" value="{!v.pickup_time1}">
+                            <aura:iteration items="{!v.pickup_timeList}" var="time">
+                                <option text="{!time.label}" value="{!time.value}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+
+                    </lightning:layoutItem>
+                    <!-- end pickup time -->
+
+                </lightning:layout>
+
+                <!-- date picker set to the selected date -->
+                <!-- jquery lib doesn't load in community for now
+                <lightning:layout horizontalAlign="stretch">
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                        <div>
+                            <c:jqueryDatePicker datePickerID="datepicker_date1" dateString="{!v.pickup_date1}" />
+                        </div>
+                    </lightning:layoutItem>
+               </lightning:layout>
+               -->
+
+            </lightning:card>
+        </lightning:layoutItem>
+        <!-- end first preferred pickup time -->
+        
+        <!-- second preferred pickup time -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+            <lightning:card title="2nd Preferred Pickup Time" class="slds-card_boundary">
+
+                <lightning:layout horizontalAlign="space">
+
+                    <!-- pickup date -->
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                        <lightning:select aura:id="pickupDate" label="Date" disabled="{!v.noTimesWork}"
+                            required="false" value="{!v.pickup_date2}">
+                            <aura:iteration items="{!v.pickup_dateList}" var="date">
+                                <option text="{!date.label}" value="{!date.id}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+
+                    </lightning:layoutItem>
+
+                    <!-- pickup time -->
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                        <lightning:select aura:id="pickupTime" label="Time" disabled="{!v.noTimesWork}"
+                            required="false" value="{!v.pickup_time2}">
+                            <aura:iteration items="{!v.pickup_timeList}" var="time">
+                                <option text="{!time.label}" value="{!time.id}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+
+                    </lightning:layoutItem>
+
+                </lightning:layout>
+
+                <!-- date picker set to the selected date -->
+                <!-- jquery lib doesn't load in community for now
+                <lightning:layout horizontalAlign="stretch">
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                        <div>
+                            <c:jqueryDatePicker datePickerID="datepicker_date2" dateString="{!v.pickup_date2}" />
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                -->
+
+            </lightning:card>
+        </lightning:layoutItem>
+		<!-- end second preferred pickup time --> 
+
+        <!-- no times work -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+
+            <aura:if isTrue="{!v.noTimesWorkDisabled}">
+
+                <lightning:card title="No Times Available Right Now" class="slds-card_boundary red">
+
+                    <lightning:layout horizontalAlign="space">
+
+                        <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                            <p>We don't have any planned pickup times over the next few weeks.</p>
+                            <p>&nbsp;</p>
+                            <p>We will contact you to arrange a pickup time.</p>
+
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+
+                </lightning:card>
+
+            </aura:if>
+
+            <aura:if isTrue="{!!v.noTimesWorkDisabled}">
+
+                <lightning:card title="None Of These Times Work" class="slds-card_boundary">
+
+                    <lightning:layout horizontalAlign="space">
+
+                        <!-- checkbox -->
+                        <lightning:layoutItem flexibility="auto" padding="around-small" size="5">
+
+                            <div class="slds-checkbox_stacked">
+                              <label class="slds-checkbox__label" for="noTimesWorkCheckbox">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">Contact Me!</span>
+                                <lightning:input type="checkbox" aura:id="noTimesWorkCheckbox" value="{!v.noTimesWork}" onchange="{!c.noTimesWorkChanged}"/>
+                              </label>
+                            </div>
+
+                        </lightning:layoutItem>
+
+                        <!-- comments -->
+                        <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                            <lightning:textarea aura:id="noTimesWorkComment" label="Comments" required="false"
+                                maxlength="255" messageWhenTooLong="A maximum of 255 characters are allowed."
+                                value="{!v.noTimesWorkComment}" />
+
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+
+                </lightning:card>
+
+            </aura:if>
+
+        </lightning:layoutItem>
+		<!-- end second preferred pickup time --> 
+        
+    </lightning:layout>
+    
+    
+    <!-- NAVIGATION BUTTONS -->
+    <aura:if isTrue="{!v.useNavigation}">
+        <div class="slds-float--right slds-p-top_large slds-p-bottom_large">
+            <lightning:button label="Cancel Order" aura:id="nav_cancelOrder" 
+                    variant="neutral" onclick="{!c.handleNavigation}"/>
+            <lightning:button label="Update Order Items" aura:id="nav_updateOrderItems" 
+                    variant="neutral" onclick="{!c.handleNavigation}"/>
+            <lightning:button label="Submit Order >>" aura:id="nav_submitOrder" 
+                    variant="brand" onclick="{!c.handleNavigation}"/>
+        </div>
+    </aura:if>
+    
+</aura:component>

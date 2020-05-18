@@ -1,0 +1,76 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="GearOrderController">
+    	
+    <!-- input parameters -->
+    <aura:attribute name="orderID" type="String" access="global" default=""/> 
+    <aura:attribute name="orderName" type="String" access="global" default=""/> 
+    <aura:attribute name="useNavigation" type="Boolean" access="global" default="true"/> 
+    
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/> 
+    
+    <!-- private variables -->
+    <aura:attribute name="order" type="Gear_Order__c"/>
+    <aura:attribute name="successMessage" type="String" default="You'll be hearing from us soon with your scheduled pickup date and time for this order."/>
+    <aura:attribute name="legalText" type="String" default="Every Bottom Covered is under no legal obligation to fill donation requests. The equitable and timely distribution of goods is determined through the discretion and sole judgment of the staff at Every Bottom Covered and is based on what we have in our inventory at any given time. Every Bottom Covered is not responsible for the items after they have left our facility. To the best of our knowledge, all items are functional, safe, and in good condition."/>
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/> 
+    
+    <!-- lightning events --> 
+    <aura:registerEvent name="stageChangedEvent" type="c:GearOrder_StageChangedEvent"/>
+	
+    <!-- HEADER -->
+    <lightning:layout class="slds-page-header">
+
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="Gear Order"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small"> 
+                <div class="slds-text-heading--label">Gear Order ({!v.order.Order_Status__c})</div>
+                <div class="slds-text-heading--medium">#{!v.order.Name}</div>
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem>
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Demographics </h1>
+                <h2 class="slds-text-heading--medium slds-text-align_center">{!v.order.Num_Children_Served__c}</h2>
+            </div>
+        </lightning:layoutItem>
+        
+        <!-- force spacing between layout items -->
+        <lightning:layoutItem> 
+            <div class="slds-text-heading--label">&nbsp; &nbsp;</div>
+        </lightning:layoutItem>
+        
+        <!-- Order Items --> 
+        <lightning:layoutItem>
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label"> Order Items </h1>
+                <h2 class="slds-text-heading--medium slds-text-align_center">{!v.order.Line_Items__c}</h2>
+            </div>
+        </lightning:layoutItem>
+        
+    </lightning:layout>
+    <!-- / HEADER -->   
+    
+    <lightning:layout>
+    	<lightning:layoutItem flexibility="auto" padding="around-large">
+            <div class="slds-text-heading_medium">{!v.successMessage}</div>
+        </lightning:layoutItem>    
+    </lightning:layout>
+    
+    <lightning:layout>
+    	<lightning:layoutItem flexibility="auto" padding="around-large">
+            <div class="slds-box slds-box_x-small">{!v.legalText}</div>
+        </lightning:layoutItem> 
+    </lightning:layout>
+    
+    <!-- NAVIGATION BUTTONS -->
+    <aura:if isTrue="{!v.useNavigation}">
+        <div class="slds-float--right slds-p-top_large slds-p-bottom_large">
+            <lightning:button label="Close" aura:id="nav_closeOrder" 
+                    variant="brand" onclick="{!c.handleNavigation}"/>
+        </div>
+    </aura:if>
+    
+</aura:component>

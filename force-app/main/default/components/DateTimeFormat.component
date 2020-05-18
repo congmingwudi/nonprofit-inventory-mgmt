@@ -1,0 +1,5 @@
+<apex:component access="global" controller="DateTimeFormatUtil">{!FormattedDateTime}
+	<apex:attribute assignTo="{!dateTimeValue}" name="dateTime_value" type="DateTime" description="The DateTime value"></apex:attribute>
+	<apex:attribute assignTo="{!dateTimeFormat}" name="dateTime_format" type="String" description="Optional DateTime format to be rendered"></apex:attribute>
+	<apex:attribute assignTo="{!dateTimeZone}" name="dateTime_zone" type="String" description="Optional timezone"></apex:attribute>
+</apex:component>

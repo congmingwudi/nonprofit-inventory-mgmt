@@ -1,0 +1,143 @@
+<messaging:emailTemplate subject="REMINDER: {!$Organization.Name} Gear Order (#{!relatedTo.Name}) Pickup Tommorow" 
+   replyTo="{!$Organization.Division}"
+   recipientType="Contact" 
+   relatedToType="Gear_Order__c">
+   
+  <messaging:htmlEmailBody >
+    <html>
+      <body>       
+        <font face="arial" size="2">
+          <p>Dear {!relatedTo.Order_Contact__r.Name},</p>
+          
+          <p>This is a reminder that we have you confirmed to pick up your gear order on 
+              <font style="font-weight: bold;">
+              <c:DateTimeFormat dateTime_value="{!relatedTo.Order_Ready__c}" dateTime_format="EEE MMM d, yyyy 'at' hh:mm a z" dateTime_zone="EST"/>.
+              </font>
+          </p>
+                    
+          <p>
+          Please plan to arrive on time for your pick up as we have orders scheduled before and after you. 
+          Also, please have enough room to accomodate all of the items on your order.
+          </p>
+          
+          <p>
+          If for any reason you will not be able to make your scheduled pick up time, let us know ASAP.
+          </p>
+          
+          <p>We look forward to seeing you!</p>
+          
+          <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;">Directions</p>
+          
+          <p style="font-weight: bold;">The address for the pickup is      
+              <a href="https://www.google.com/maps/place/877+East+Delavan+Avenue,+Buffalo+NY+14215">
+               877 East Delavan Avenue, Buffalo NY 14215
+              </a>
+          </p>
+          
+          <p>
+          We are located inside the Delavan Grider Community Center at the corner of Moselle St.  
+          There is a parking lot across the street and on-street parking.  
+          Enter through the black gates and advise that you are there for a pickup from Every Bottom Covered.  
+          Please be prepared to show photo ID and credentials for the partner organization that you are picking supplies up for.  
+          Please have a printed copy of the donation request. 
+          <b>We will have your order ready for pickup.</b>
+          </p>
+          
+          <p>If you have any trouble finding us, please call us at 716-896-7021.</p>
+                   
+          <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;">Your Gear Order</p>
+          <p>Order Number: {!relatedTo.Name}</p>
+          <p>Order Date: 
+              <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                <apex:param value="{!relatedTo.Order_Submitted__c}" />
+              </apex:outputText>
+          </p>           
+          <p>Comments / Special Requests: {!relatedTo.Comment__c}</p>
+          
+          <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;"><b>Partner Organization</b></p>         
+          <p>Organization Name: {!relatedTo.Partner_Organization__r.Name}</p>  
+          <p>Contact Name: {!relatedTo.Order_Contact__r.Name}</p> 
+          <p>Email: {!relatedTo.Order_Contact__r.Email}</p>
+          <p>Mobile Phone: {!relatedTo.Order_Contact__r.MobilePhone}</p>                 
+          
+          <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;"><b>Demographics</b></p>          
+          <p># of Families Served: {!Text(relatedTo.Num_Families_Served__c)}</p>
+          <p># of Children Served: {!Text(relatedTo.Num_Children_Served__c)}</p>
+          
+          <table style="border: 1px solid #FFC0CB;">
+            <tr style="border: 1px solid #FFC0CB;"> 
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Child Gender</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Child Age</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Child Ethnicity</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Parent Age</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Parent Gender</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Parent Ethnicity</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Parent Marital Status</td>
+               <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Comments / Special Requests</td>
+            </tr>
+            <apex:repeat var="god" value="{!relatedTo.Gear_Order_Demographics__r}">
+              <tr style="border: 1px solid #FFC0CB;">
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Child_Gender__c}</td>
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Child_Age__c}</td>
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Child_Race_Ethnicity__c}</td>
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Parent_Age__c}</td>
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Parent_Gender__c}</td>
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Parent_Race_Ethnicity__c}</td>
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Parent_Marital_Status__c}</td>        
+                <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!god.Comment__c}</td>               
+              </tr>
+            </apex:repeat>                 
+          </table>
+          
+          <apex:repeat var="god" value="{!relatedTo.Gear_Order_Demographics__r}">
+              <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;">
+                  <b>Order Items For Child (Gender: {!god.Child_Gender__c} | Age: {!god.Child_Age__c} | Ethnicity: {!god.Child_Race_Ethnicity__c})</b>
+              </p>
+
+              <table style="border: 1px solid #FFC0CB;">
+                <tr style="border: 1px solid #FFC0CB;"> 
+                   <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Product</td>
+                   <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Quantity</td>
+                   <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Additional Details</td>
+                   <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Comments / Special Requests</td>               
+                </tr>                
+                <apex:repeat var="goi" value="{!relatedTo.Gear_Order_Items__r}">
+                    <apex:outputPanel rendered="{!goi.Gear_Order_Demographic__c == god.Id}">
+                      <tr style="display: {!If(goi.Gear_Order_Demographic__c == god.Id ,'','none')}; border: 1px solid #FFC0CB;">
+                        <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!goi.Product__r.Name}</td>
+                        <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!Text(goi.Quantity__c)}</td>
+                        <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">
+                            <apex:outputPanel rendered="{!CONTAINS(goi.Product__r.Name,'Clothing')}">
+                                <p style="display: {!If(CONTAINS(goi.Product__r.Name,'Clothing'),'','none')};">Season: {!goi.Season__c}</p>
+                                <p style="display: {!If(CONTAINS(goi.Product__r.Name,'Clothing'),'','none')};">Clothing Size: {!goi.Clothing_Size__c}</p>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!goi.Product__r.Name == 'Diapers'}">
+                                <p style="display: {!If(CONTAINS(goi.Product__r.Name,'Diapers'),'','none')};">Diaper Size: {!goi.Diaper_Size__c}</p>
+                            </apex:outputPanel>
+                        </td>
+                        <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!goi.Comment__c}</td>
+                      </tr>
+                    </apex:outputPanel>
+                </apex:repeat>                                             
+              </table>
+          </apex:repeat>
+ 
+            <p>Thanks from all of us at {!$Organization.Name}!</p>
+                        
+            <p>
+            {!$Organization.Street}, {!$Organization.City}, {!$Organization.State} {!$Organization.PostalCode}<br></br>           
+            Email: {!$Organization.Division}
+            </p>
+            
+            <img src="
+            https://everybottomcovered--c.documentforce.com/servlet/servlet.ImageServer?id=0153i000000Avuw&oid=00D3i000000sQ2X&lastMod=1582952223000"/> 
+                     
+        </font>
+      </body>
+    </html>
+  </messaging:htmlEmailBody> 
+  <messaging:plainTextEmailBody >
+
+             
+  </messaging:plainTextEmailBody>  
+</messaging:emailTemplate>

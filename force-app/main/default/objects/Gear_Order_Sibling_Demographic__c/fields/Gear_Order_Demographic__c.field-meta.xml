@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Gear_Order_Demographic__c</fullName>
+    <externalId>false</externalId>
+    <label>Gear Order Demographic</label>
+    <referenceTo>Gear_Order_Demographic__c</referenceTo>
+    <relationshipLabel>Gear Order Sibling Demographics</relationshipLabel>
+    <relationshipName>Gear_Order_Sibling_Demographics</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

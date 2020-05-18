@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>pound (lb)</fullName>
+        <default>true</default>
+        <label>pound (lb)</label>
+    </customValue>
+    <customValue>
+        <fullName>ounce (oz)</fullName>
+        <default>false</default>
+        <label>ounce (oz)</label>
+    </customValue>
+    <customValue>
+        <fullName>kilogram (kg)</fullName>
+        <default>false</default>
+        <label>kilogram (kg)</label>
+    </customValue>
+    <customValue>
+        <fullName>gram (g)</fullName>
+        <default>false</default>
+        <label>gram (g)</label>
+    </customValue>
+    <masterLabel>Weight Unit of Measure</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

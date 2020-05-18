@@ -1,0 +1,16 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global">
+
+   <!-- input parameters - that store $Flow.ActiveStages and $Flow.CurrentStage -->
+   <aura:attribute name="stages" type="String[]" default="['stage1','stage2','stage3']"/>
+   <aura:attribute name="currentStageIndex" type="Integer" default="0"/>
+    
+   <!-- output parameter - sets the $Flow.CurrentStage to the value in the stages array of the currentStageIndex -->
+   <aura:attribute name="currentStage" type="String"/>
+ 
+   <!-- handlers -->
+   <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+   <!-- body --> 
+   <lightning:progressIndicator aura:id="progressIndicator" currentStep="{!v.currentStage}" type="path"/>
+
+</aura:component>

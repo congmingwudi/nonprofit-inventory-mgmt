@@ -1,0 +1,83 @@
+<messaging:emailTemplate subject="{!$Organization.Name} Community Partner renewed for {!relatedTo.Name}" 
+   replyTo="{!$Organization.Division}"
+   recipientType="Contact" 
+   relatedToType="Account">
+   
+  <messaging:htmlEmailBody >
+    <html>
+      <body>       
+        <font face="arial" size="2">
+            <p>Dear {!recipient.FirstName},</p>
+            
+            <p>Thank you for renewing your organization details and agreements for the {!$Organization.Name} Community Partner Program!</p>
+            
+            <p>Please find your signed partner agreements attached below.</p>
+                           
+            <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;"><b>Partner Organization</b></p>         
+            
+            <p>Organization Name: {!relatedTo.Name}</p>
+            
+            <p>
+            Executive Director: {!relatedTo.Executive_Director__r.Name}<br/>
+            Email: {!relatedTo.Executive_Director__r.Email}<br/>
+            Mobile Phone: {!relatedTo.Executive_Director__r.MobilePhone}<br/>
+            Work Phone: {!relatedTo.Executive_Director__r.npe01__WorkPhone__c}
+            </p>
+            
+            <p>
+            Primary Contact: {!relatedTo.npe01__One2OneContact__r.Name}<br/>
+            Email: {!relatedTo.npe01__One2OneContact__r.Email}<br/>
+            Mobile Phone: {!relatedTo.npe01__One2OneContact__r.MobilePhone}<br/>
+            Work Phone: {!relatedTo.npe01__One2OneContact__r.npe01__WorkPhone__c} 
+            </p>
+            
+            <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;"><b>Organization Details</b></p>         
+            
+            <p>Organization Type: {!relatedTo.Organization_Type__c}</p>
+            <p>Organization FEIN: {!relatedTo.Tax_ID__c}</p>
+            <p>Organization Website: {!relatedTo.Website}</p>
+            <p>Organization Mission: {!relatedTo.Description}</p>
+            <p>Counties Served: {!relatedTo.Counties_Served__c}</p>
+            <p>Items and quantities you need the most for your clients: {!relatedTo.Items_Most_Needed__c}</p>
+            <p>You are able to accept donations of used baby gear from WeeCycle: {!relatedTo.Accept_Donations__c}</p>
+            <p>Restrictions on the items that you are able to accept: {!relatedTo.Restrictions__c}</p>
+            <p>You have the ability to pick up the items you request for your clients from our warehouse: {!relatedTo.Pick_Up_Items__c}</p>
+            <p>Anything else you wanted to share about your organization with us: {!relatedTo.Other_Info__c}</p>          
+          
+            <p style="font-size: 14px; font-weight: bold; background: #FFC0CB; padding: 5px;"><b>Demographics Served</b></p> 
+            
+            <p>Estimated number of children that will utilize baby gear provided by WeeCycle per year: {!relatedTo.Families_Receiving_Support__c}</p> 
+            
+            <table style="border: 1px solid #FFC0CB;">
+                <tr style="border: 1px solid #FFC0CB;"> 
+                   <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">Race / Ethnicity</td>
+                   <td style="font-size: 12px; font-weight: bold; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">% Children Served</td>
+                </tr>
+                <apex:repeat var="demographic" value="{!relatedTo.Demographics_Served__r}">
+                  <tr style="border: 1px solid #FFC0CB;">
+                    <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!demographic.Race_Ethnicity__c}</td>
+                    <td style="font-size: 12px; border: 1px solid #FFC0CB; padding: 5px; text-align: left;">{!demographic.Percent_Served__c}</td>        
+                  </tr>
+                </apex:repeat>                 
+            </table>      
+             
+            <br></br>
+            <p>Thanks from all of us at {!$Organization.Name}!</p>
+                        
+            <p>
+            {!$Organization.Street}, {!$Organization.City}, {!$Organization.State} {!$Organization.PostalCode}<br></br>           
+            Email: {!$Organization.Division}
+            </p>
+            
+            <img src="
+            https://everybottomcovered--c.documentforce.com/servlet/servlet.ImageServer?id=0153i000000Avuw&oid=00D3i000000sQ2X&lastMod=1582952223000"/> 
+                      
+        </font>
+      </body>
+    </html>
+  </messaging:htmlEmailBody> 
+  <messaging:plainTextEmailBody >
+
+             
+  </messaging:plainTextEmailBody>  
+</messaging:emailTemplate>

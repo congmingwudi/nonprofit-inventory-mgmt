@@ -1,0 +1,34 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes">
+    
+    <!-- input parameters -->
+    <aura:attribute name="currentStageIndex" type="Integer" default="0"/> 
+    
+    <!-- handlers -->
+	<aura:handler name="init" action="{!c.init}" value="{!this}"/> 
+    <aura:handler name="stageChangedEvent" event="c:GearOrder_StageChangedEvent" action="{!c.handleStageChangedEvent}"/>
+
+    <!-- body -->
+	<div class="c-container">
+                
+            <lightning:layout multipleRows="false">
+                
+                <!-- new gear order flow -->
+                <lightning:layoutItem flexibility="auto" padding="around-small" class="custom-box">
+                    <lightning:card title="">
+                        <lightning:flow aura:id="New_Gear_Order"/>
+                        <!-- <lightning:flow aura:id="New_Gear_Order" onstatuschange="{!c.flowStatusChange}"/> -->
+                    </lightning:card>
+                </lightning:layoutItem>
+                
+                <!-- product list -->
+                <aura:if isTrue="{!v.currentStageIndex == 0}">
+                    <lightning:layoutItem flexibility="auto" padding="around-small" class="custom-box">
+                        <c:ProductList />
+                    </lightning:layoutItem>
+                </aura:if>
+                
+            </lightning:layout>
+
+    </div>
+    
+</aura:component>

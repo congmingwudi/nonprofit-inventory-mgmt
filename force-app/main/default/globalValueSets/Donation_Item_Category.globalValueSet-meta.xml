@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>None</fullName>
+        <default>true</default>
+        <label>None</label>
+    </customValue>
+    <customValue>
+        <fullName>Gear</fullName>
+        <default>false</default>
+        <label>Gear</label>
+    </customValue>
+    <customValue>
+        <fullName>Activity</fullName>
+        <default>false</default>
+        <label>Activity</label>
+    </customValue>
+    <customValue>
+        <fullName>Feeding</fullName>
+        <default>false</default>
+        <label>Feeding</label>
+    </customValue>
+    <customValue>
+        <fullName>Nursery</fullName>
+        <default>false</default>
+        <label>Nursery</label>
+    </customValue>
+    <customValue>
+        <fullName>Health &amp; Safety</fullName>
+        <default>false</default>
+        <label>Health &amp; Safety</label>
+    </customValue>
+    <customValue>
+        <fullName>Toys</fullName>
+        <default>false</default>
+        <label>Toys</label>
+    </customValue>
+    <customValue>
+        <fullName>Books</fullName>
+        <default>false</default>
+        <label>Books</label>
+    </customValue>
+    <customValue>
+        <fullName>Videos &amp; Music</fullName>
+        <default>false</default>
+        <label>Videos &amp; Music</label>
+    </customValue>
+    <customValue>
+        <fullName>Clothing</fullName>
+        <default>false</default>
+        <label>Clothing</label>
+    </customValue>
+    <customValue>
+        <fullName>Bath &amp; Potty</fullName>
+        <default>false</default>
+        <label>Bath &amp; Potty</label>
+    </customValue>
+    <description>Donation Item Category</description>
+    <masterLabel>Donation Item Category</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

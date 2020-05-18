@@ -1,0 +1,59 @@
+<!--
+ - Created by ryan.cox on 1/31/20.
+ -->
+
+<aura:component description="PartnerSignup_Demographics" implements="lightning:availableForFlowScreens" access="global" controller="PartnerSignupController">
+
+    <!-- input parameters -->
+    <aura:attribute name="accountID" type="String" access="global" default=""/>
+    <aura:attribute name="isExecutiveDirector" type="Boolean" access="global" default="false"/>
+
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/>
+
+    <!-- private attributes -->
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="account" type="Account" access="global" default="{}"/>
+    <aura:attribute name="total_PercentFamiliesServed" type="Integer" default="0"/>
+    <aura:attribute name="numFamiliesServed" access="global" type="Integer"/>
+    <aura:attribute name="demographicsTableData" type="Object"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+    <aura:attribute name="isUpdate" type="Boolean" default="false"/> <!-- indicates to create or update demographics served -->
+
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- container -->
+    <div style="font-size: 1.1em;">
+
+        <c:GearOrder_EnterBulkDemographics recordId="{!v.accountID}" isAccount="true"
+                                           numFamiliesServed="{!v.numFamiliesServed}"
+                                           total_PercentFamiliesServed="{!v.total_PercentFamiliesServed}"
+                                           demographicsTableData="{!v.demographicsTableData}"
+                                           isUpdate="{!v.isUpdate}"
+                                           errorMessage="{!v.errorMessage}" />
+
+        <aura:if isTrue="{! v.isLoading }">
+            <lightning:spinner alternativeText="Loading"/>
+        </aura:if>
+
+    </div>
+    <!-- end container -->
+
+    <!-- NAVIGATION BUTTONS -->
+    <div class="slds-float--right slds-p-top_large slds-p-bottom_large slds-p-horizontal_small">
+        <lightning:button label="Cancel" aura:id="nav_cancel"
+                          variant="neutral" onclick="{!c.handleNavigation}"/>
+ 
+        <aura:if isTrue="{!v.isExecutiveDirector == true}">
+            <lightning:button label="Partner Agreement >>" aura:id="nav_partnerAgreement"
+                          variant="brand" onclick="{!c.handleNavigation}"/>
+        </aura:if>
+
+        <aura:if isTrue="{!v.isExecutiveDirector == false}">
+            <lightning:button label="Submit >>" aura:id="nav_submit"
+                              variant="brand" onclick="{!c.handleNavigation}"/>
+        </aura:if>
+    </div>
+
+</aura:component>

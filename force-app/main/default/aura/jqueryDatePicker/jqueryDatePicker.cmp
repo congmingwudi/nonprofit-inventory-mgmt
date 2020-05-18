@@ -1,0 +1,28 @@
+<aura:component>
+	
+    <!-- jquery libs as static resources -->
+    <ltng:require scripts="{!join(',', $Resource.jquery_2_2_4_min_js, $Resource.jquery_ui_1_12_1_zip + '/jquery-ui-1.12.1/jquery-ui.min.js')}"
+                  afterScriptsLoaded="{!c.init}"/>    
+    <ltng:require styles="{!$Resource.jquery_ui_1_12_1_zip + '/jquery-ui-1.12.1/jquery-ui.min.css'}"/>
+    
+    <!-- *** wish we could load external libs from CDN like this... 
+	<ltng:require scripts="{!join(',', 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js')}"
+                  afterScriptsLoaded="{!c.init}"/>    
+    <ltng:require styles="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"/>
+    -->
+    
+    <!-- input parameters -->
+    <aura:attribute name="datePickerID" type="String" default="datepicker" />
+    <aura:attribute name="dateString" type="String" default="11/15/2018" />
+    
+    <!-- private attributes --> 
+	<aura:attribute name="jquery_ui_lib" type="String" default="{!$Resource.jquery_ui_1_12_1_zip}" />    
+    
+    <!-- handlers -->
+    <aura:handler name="change" value="{!v.dateString}" action="{!c.dateChanged}"/>
+    
+    <!-- date picker -->
+    <div aura:id="{!v.datePickerID}" id="{!v.datePickerID}" 
+         style="color:white; outline: none; border: none;" />
+ 
+</aura:component>

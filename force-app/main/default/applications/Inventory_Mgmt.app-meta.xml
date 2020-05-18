@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <logo>inventoryicon</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>Manage pickups, donation items, and partner orders.</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Inventory Mgmt</label>
+    <navType>Standard</navType>
+    <tabs>standard-Feed</tabs>
+    <tabs>standard-Event</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Contact</tabs>
+    <tabs>standard-Dashboard</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>Product__c</tabs>
+    <tabs>Donation_Location__c</tabs>
+    <tabs>Pickup__c</tabs>
+    <tabs>Gear_Order__c</tabs>
+    <tabs>Gear_Order_Item__c</tabs>
+    <tabs>Pickup_Line_Item__c</tabs>
+    <tabs>standard-Task</tabs>
+    <tabs>standard-ListEmail</tabs>
+    <tabs>Inventory_Snapshot__c</tabs>
+    <tabs>standard-File</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>WeeCycle_Inventory_UtilityBar1</utilityBar>
+</CustomApplication>

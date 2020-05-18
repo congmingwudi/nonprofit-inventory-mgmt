@@ -1,0 +1,93 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="GearOrderController">
+	
+    <!-- input parameters -->
+    <aura:attribute name="useNavigation" type="Boolean" access="global" default="true"/>
+    
+    <!-- output parameters -->
+    <aura:attribute name="partnerOrgID" type="String" access="global" default=""/> 
+	<aura:attribute name="contact" type="Contact" access="global" default="{}"/> 
+    <aura:attribute name="navigation" type="String" access="global"/> 
+    <aura:attribute name="deviceType" type="String" access="global" default=""/> 
+    
+    <!-- private attributes -->
+    <aura:attribute name="partnerOrgList" type="List" default="[]"/> 
+    <aura:attribute name="okToSubmit" type="Boolean" default="false"/>
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/> 
+    
+    <!-- lightning events --> 
+    <aura:registerEvent name="stageChangedEvent" type="c:GearOrder_StageChangedEvent"/>
+    
+    <!-- PARTNER INFO -->     
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem padding="around-small" size="12">       
+        
+            <lightning:card title="PARTNER INFORMATION">
+                
+                <lightning:layout multipleRows="true">
+                            
+                    <!-- partner organization -->
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                        <lightning:select aura:id="selectField" label="Partner Organization" required="true" 
+                            messageWhenValueMissing="Partner Organization is required." value="{!v.partnerOrgID}">
+                            <aura:iteration items="{!v.partnerOrgList}" var="partner">
+                                <option text="{!partner.Name}" value="{!partner.Id}"></option>
+                            </aura:iteration>
+                        </lightning:select>            
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </lightning:card>
+
+            <!-- CONTACT --> 
+			<lightning:card title="PRIMARY CONTACT FOR THIS ORDER">
+                
+                <lightning:layout multipleRows="true">
+                                                
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                    	<lightning:input aura:id="field" label="First Name" required="true" 
+                        	messageWhenValueMissing="First Name is required." value="{!v.contact.FirstName}" />              
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                    	<lightning:input aura:id="field" label="Last Name" required="true" 
+                        	messageWhenValueMissing="Last Name is required." value="{!v.contact.LastName}" />
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+                <lightning:layout>
+                            
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                    	<lightning:input aura:id="field" type="email" label="Email" required="true" 
+                        	messageWhenValueMissing="Email is required." value="{!v.contact.Email}" />
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+                <lightning:layout>
+                    
+                    <lightning:layoutItem flexibility="auto" padding="around-small">
+                    	<lightning:input aura:id="field" type="tel" label="Mobile Phone" required="true" 
+                        	messageWhenValueMissing="Mobile Phone is required." value="{!v.contact.MobilePhone}"
+                            pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}" messageWhenPatternMismatch="Please enter phone number like this: 999-999-9999" />
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </lightning:card>
+            
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <!-- NAVIGATION BUTTONS -->
+    <aura:if isTrue="{!v.useNavigation}">
+        <div class="slds-float--right slds-p-top_large slds-p-bottom_large">
+            <lightning:button label="Enter Demographics >>" aura:id="nav_enterDemographics" 
+                    variant="brand" onclick="{!c.handleNavigation}"/>
+        </div>
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,23 @@
+<!--
+ - Created by ryan.cox on 2019-09-19.
+ -->
+
+<apex:page id="PartnerSignupFlow_LightningOutAppPage" showHeader="false" standardStylesheets="false" controller="PartnerSignupController">
+    <apex:includeLightning />
+
+    <div style="width:100%;height:100px;" id="lexContainer">
+        <div id="PartnerSignup"></div>
+    </div>
+
+    <script>
+    $Lightning.use("c:PartnerSignupFlowLightningOutApp", function() {
+        $Lightning.createComponent("c:PartnerSignupFlow",
+            {"partnerID": "{!pagePartnerID}", "renewal": "{!pageRenewal}"},
+            "lexContainer",
+        	function(cmp) {
+ 				document.getElementById("PartnerSignup").style.display = 'none';
+        	});
+    });
+	</script>
+
+</apex:page>

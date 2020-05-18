@@ -1,0 +1,11 @@
+<design:component>
+
+    <!-- input -->
+    <design:attribute name="accountID" label="Account ID" />
+    <design:attribute name="renewal" label="NEW or RENEW" />
+    <design:attribute name="formFirstTime" label="Form First Time" />
+
+    <!-- output -->
+    <design:attribute name="navigation" label="Navigation" />
+
+</design:component>

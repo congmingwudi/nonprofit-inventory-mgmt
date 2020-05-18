@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Weight__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>The weight (lbs) of the items in this order line item. This field is calculated as quantity times product weight (lbs).</inlineHelpText>
+    <label>Weight (lbs)</label>
+    <precision>8</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

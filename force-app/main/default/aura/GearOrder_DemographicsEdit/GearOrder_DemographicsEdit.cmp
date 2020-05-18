@@ -1,0 +1,301 @@
+<aura:component implements="lightning:availableForFlowScreens" access="global" controller="GearOrderDemographicsController">
+    
+    <!-- input parameters -->
+    <aura:attribute name="orderID" type="String" access="global" default=""/> 
+    <aura:attribute name="orderName" type="String" access="global" default=""/> 
+    <aura:attribute name="useNavigation" type="Boolean" access="global" default="true"/> 
+    
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/> 
+    
+    <!-- private attributes -->
+    <aura:attribute name="order" type="Gear_Order__c"/>
+    <aura:attribute name="demographicsList" type="List" default="[]"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+    <aura:handler name="change" value="{!v.isLoading}" action="{!c.isLoadingChanged}"/>
+    
+    <!-- HEADER -->
+    <lightning:layout class="slds-page-header">
+
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="Gear Order"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small"> 
+                <div class="slds-text-heading--label">Gear Order ({!v.order.Order_Status__c})</div>
+                <div class="slds-text-heading--medium">#{!v.order.Name}</div>
+        </lightning:layoutItem>
+       
+  		<!-- guided instructions for this screen -->
+        <lightning:layoutItem size="8" flexibility="auto" padding="horizontal-small" class="slds-align_absolute-center">
+            <div class="slds-box slds-box_x-small screenInstructions">
+                <lightning:icon iconName="utility:info_alt" alternativeText="Order Form Help" size="x-small"/>
+                &nbsp;Instructions:
+                <ol class="slds-list--ordered">
+                	<li>Enter the demographic information for each child you will be ordering gear for.</li>
+                	<li>Use 'Child Alias' to assign a name or other identifier to the child. This field is for your information only and is designed to make ordering and distributing gear easier for you. It is not utilized by WeeCycle.</li>
+                    <li>Press 'Enter Order Items' to add order items for each child.</li>
+                </ol>            
+        	</div>
+        </lightning:layoutItem>      
+        
+    </lightning:layout>
+    <!-- / HEADER --> 
+  
+	<lightning:layout horizontalAlign="spread">
+        
+    	<!-- # families served -->
+        <lightning:layoutItem flexibility="auto" padding="around-small">
+            <div style="position:relative;">
+            	<lightning:input aura:id="Num_Families_Served" label="# of Families To Be Served With This Order" 
+                             type="number" value="{!v.order.Num_Families_Served__c}" placeholder="" min="1"
+                             required="true" messageWhenValueMissing="# of Families To Be Served is required."
+                             onblur="{! c.saveNumFamiliesServed }" />
+                <!-- lightning:helptext doesn't display properly when this component is embedded in a visualforce page, so commenting out for now -->
+				<!-- <lightning:helptext content="If left empty, this will be the same as the # of demographics entered." iconName="utility:info" class="helptext"/> -->
+            </div>
+        </lightning:layoutItem>
+        
+        <!-- for spacing -->
+        <aura:if isTrue="{!v.errorMessage == ''}">
+        	<lightning:layoutItem flexibility="auto" padding="around-small"></lightning:layoutItem>
+		</aura:if>  
+        
+        <!-- error message -->
+        <aura:if isTrue="{!v.errorMessage != ''}">
+        	<lightning:layoutItem flexibility="auto" padding="around-small" class="slds-align_absolute-center">
+            	<ui:outputText value="{!v.errorMessage}" class="errorMessage"/>
+            </lightning:layoutItem>
+    	</aura:if>        
+        
+    </lightning:layout>
+    
+    <!-- DEMOGRAPHICS TABLE attributes -->
+    <aura:attribute name="tableData" type="Object"/>
+    <aura:attribute name="tableColumns" type="List"/>
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="sortedBy" type="String"/>
+    <aura:attribute name="sortedDirection" type="String"/>
+    <aura:attribute name="defaultSortDirection" type="String"/>
+    
+    <!-- DEMOGRAPHICS TABLE -->     
+    <lightning:layout multipleRows="true">
+        <lightning:layoutItem padding="around-small" size="12">       
+            <lightning:card title="{!'DEMOGRAPHICS (' + v.demographicsList.length + ')'}">
+                <aura:set attribute="actions">
+                    <lightning:button class="slds-button slds-button--brand" 
+                    	onclick="{!c.openModal_AddDemographic}">Add Demographic</lightning:button>
+                </aura:set>
+
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px" class="slds-scrollable">
+                    <lightning:datatable aura:id="demographicsTable"
+                                         data="{! v.tableData }"
+                                         columns="{! v.tableColumns }"
+                                         keyField="Name"
+                                         onrowselection="{! c.getSelectedName }"
+                                         hideCheckboxColumn="true"
+                                         showRowNumberColumn="true"
+                                         sortedBy="{! v.sortedBy }"
+                                         sortedDirection="{! v.sortedDirection }"
+                                         defaultSortDirection="{! v.defaultSortDirection }"
+                                         onsort="{! c.updateColumnSorting }"
+                                         onrowaction="{! c.handleRowAction }"
+                                         onsave="{! c.handleSave }"
+                                         class="slds-p-around_medium" />                                         
+                </div>
+                <aura:if isTrue="{! v.isLoading }">
+                    <lightning:spinner alternativeText="Loading"/>
+                </aura:if>
+            </lightning:card>
+            
+        </lightning:layoutItem>        
+    </lightning:layout>
+    <!-- / DEMOGRAPHICS TABLE -->   
+            
+ 	<!-- MODAL DIALOG attributes --> 
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="demographic_modalReopen" type="boolean" default="false"/>
+    <aura:attribute name="demographic_modalAction" type="String"/>
+    <aura:attribute name="demographic_modalTitle" type="String"/>
+    <aura:attribute name="demographicFields" type="String[]" default="[‘Name’,’Child_Gender__c’,’Child_Age__c’]" /> 
+    <aura:attribute name="demographic" type="Gear_Order_Demographic__c"/>
+    <aura:attribute name="demographic_readonly" type="Boolean" default="false"/>
+    <aura:attribute name="demographic_childAgeOptionList" type="List"/>
+    <aura:attribute name="demographic_childGenderOptionList" type="List"/>
+    <aura:attribute name="demographic_childRaceEthnicityOptionList" type="List"/>
+    <aura:attribute name="demographic_parentAgeOptionList" type="List"/>
+    <aura:attribute name="demographic_parentGenderOptionList" type="List"/>
+    <aura:attribute name="demographic_parentRaceEthnicityOptionList" type="List"/>
+    <aura:attribute name="demographic_parentMaritalStatusOptionList" type="List"/>
+    
+    <!-- MODAL DIALOG --> 
+    <aura:if isTrue="{!v.isOpen}">
+               
+    	<div class="slds-m-around--xx-large">    	  
+            <div role="dialog" tabindex="-1" aria-labelledby="header99" class="slds-modal slds-fade-in-open ">
+                <div class="slds-modal__container">
+                    
+                    <!-- MODAL HEADER -->
+                    <div class="slds-modal__header">
+                        <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModal}">
+                            X <span class="slds-assistive-text">Close</span>
+                        </button>     
+                        <lightning:layout >
+                            <lightning:layoutItem padding="around-small">
+                                <lightning:icon iconName="standard:lead_list" alternativeText=""/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem padding="around-small">
+                                <h2 id="header99" class="slds-text-heading--medium">{!v.demographic_modalTitle}</h2>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </div>
+                    
+                    <!--MODAL BODY -->
+                    <div class="slds-modal__content slds-p-around--small">
+                                            	                        
+						<lightning:layout horizontalAlign="spread">
+                            
+                            <lightning:layoutItem flexibility="auto" padding="around-small">
+                                                                 
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:input aura:id="demographic_childAlias" label="Child Alias"
+                                        required="false" messageWhenValueMissing="Child Alias is required." 
+                                        value="{!v.demographic.Child_Alias__c}" disabled="{!v.demographic_readonly}"/>                                
+                            	</lightning:layoutItem>
+                            
+                            	<lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:textarea aura:id="demographic_comment" label="Comments / Special Requests"
+                                        required="false" maxlength="255" messageWhenTooLong="A maximum of 255 characters are allowed."
+                                        value="{!v.demographic.Comment__c}" disabled="{!v.demographic_readonly}"/>                                
+                                </lightning:layoutItem>                               
+                                
+                            </lightning:layoutItem>
+                            
+                            <lightning:layoutItem flexibility="auto" padding="around-small">
+                                
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_childGender" label="Child Gender"  
+                                        required="true" messageWhenValueMissing="Child Gender is required." 
+                                        value="{!v.demographic.Child_Gender__c}" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_childGenderOptionList}" var="gender">
+                                            <option text="{!gender.label}" value="{!gender.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select> 
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_childAge" label="Child Age"  
+                                        required="true" messageWhenValueMissing="Child Age is required." 
+                                        value="{!v.demographic.Child_Age__c}" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_childAgeOptionList}" var="age">
+                                            <option text="{!age.label}" value="{!age.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_childRaceEthnicity" label="Child Ethnicity"  
+                                        required="true" messageWhenValueMissing="Child Ethnicity is required." 
+                                        value="{!v.demographic.Child_Race_Ethnicity__c}" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_childRaceEthnicityOptionList}" var="race">
+                                            <option text="{!race.label}" value="{!race.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                        
+                            </lightning:layoutItem>
+                            
+                            <lightning:layoutItem flexibility="auto" padding="around-small">
+                                
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_parentGender" label="Parent Gender"  
+                                        required="false" messageWhenValueMissing="Parent Gender is required." 
+                                        value="{!v.demographic.Parent_Gender__c}" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_parentGenderOptionList}" var="gender">
+                                            <option text="{!gender.label}" value="{!gender.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select> 
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_parentAge" label="Parent Age"  
+                                        required="false" messageWhenValueMissing="Parent Age is required." 
+                                        value="{!v.demographic.Parent_Age__c}" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_parentAgeOptionList}" var="age">
+                                            <option text="{!age.label}" value="{!age.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                                 
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_parentRaceEthnicity" label="Parent Ethnicity"  
+                                        required="false" messageWhenValueMissing="Parent Ethnicity is required." 
+                                        value="{!v.demographic.Parent_Race_Ethnicity__c }" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_parentRaceEthnicityOptionList}" var="race">
+                                            <option text="{!race.label}" value="{!race.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem flexibility="auto" padding="around-small">
+                                    <lightning:select aura:id="demographic_parentMaritalStatus" label="Parent Marital Status"  
+                                        required="false" messageWhenValueMissing="Parent Marital Status is required." 
+                                        value="{!v.demographic.Parent_Marital_Status__c}" disabled="{!v.demographic_readonly}">                  	
+                                        <aura:iteration items="{!v.demographic_parentMaritalStatusOptionList}" var="status">
+                                            <option text="{!status.label}" value="{!status.Id}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                
+                            </lightning:layoutItem>
+                            
+                        </lightning:layout>                
+                        
+                    </div>
+                    <!-- / MODAL BODY -->
+                    
+                    <!-- MODAL FOOTER -->
+                    <div class="slds-modal__footer">
+                        <lightning:button variant="neutral" onclick="{!c.closeModal}">Cancel</lightning:button>
+                        <aura:if isTrue="{!v.demographic_modalAction == 'create'}">
+                            <lightning:button aura:id="button_saveDemographic" variant="brand" onclick="{!c.saveDemographic}">Save</lightning:button>
+							<lightning:button aura:id="button_saveAddAnotherDemographic" variant="brand" onclick="{!c.saveDemographic}">Save &amp; Add Another</lightning:button>                    	
+                        </aura:if>
+                        <aura:if isTrue="{!v.demographic_modalAction == 'update'}">
+                        	<lightning:button variant="brand" onclick="{!c.saveDemographic}">Update</lightning:button>
+                    	</aura:if>
+                        <aura:if isTrue="{!v.demographic_modalAction == 'delete'}">
+                        	<lightning:button variant="brand" onclick="{!c.deleteDemographic}">Delete</lightning:button>
+                    	</aura:if>
+                	</div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+                     
+        </div>    
+    </aura:if>  	
+    <!-- END MODAL DIALOG -->    
+    
+ 	<!-- SIBLINGS MODAL DIALOG attributes --> 
+    <aura:attribute name="siblings_isOpen" type="boolean" default="false"/>
+    <aura:attribute name="siblings_modalTitle" type="String"/>  
+    
+    <!-- SIBLINGS MODAL DIALOG --> 
+    <aura:if isTrue="{!v.siblings_isOpen}">
+    	<c:GearOrder_SiblingDemographicsEdit isOpen="{!v.siblings_isOpen}" modalTitle="{!v.siblings_modalTitle}" demographic="{!v.demographic}" />
+    </aura:if>
+    
+    <!-- NAVIGATION BUTTONS -->
+    <aura:if isTrue="{!v.useNavigation}">
+        <div class="slds-float--right slds-p-top_large slds-p-bottom_large">
+            <lightning:button label="Cancel Order" aura:id="nav_cancelOrder" 
+                    variant="neutral" onclick="{!c.handleNavigation}"/>	
+            <lightning:button label="Enter Order Items >>" aura:id="nav_enterOrderItems" 
+                    variant="brand" onclick="{!c.handleNavigation}"/>
+        </div>
+    </aura:if>
+    
+</aura:component>

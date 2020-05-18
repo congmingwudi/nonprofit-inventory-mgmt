@@ -1,0 +1,52 @@
+<!--
+ - Created by ryan.cox on 2/6/20.
+ -->
+
+<aura:component description="PartnerSignup_Submitted" implements="lightning:availableForFlowScreens" access="global" controller="PartnerSignupController">
+
+    <!-- input parameters -->
+    <aura:attribute name="accountID" type="String" access="global" default=""/>
+    <aura:attribute name="renewal" type="String" access="global" default=""/> <!-- NEW or RENEW -->
+
+    <!-- private attributes -->
+    <aura:attribute name="account" type="Account" default="{}"/>
+
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- container -->
+    <div style="font-size: 1.1em;">
+
+        <lightning:layout>
+            <lightning:layoutItem flexibility="auto" padding="around-large">
+               <aura:if isTrue="{!v.renewal == 'NEW'}">
+                    <div class="slds-text-heading_medium slds-text-align_center">
+
+                        <p>Thank you for submitting your organization to WeeCycle's partner waitlist!</p>
+                        <br/>
+                        <p>We will contact you when a spot is available to join our community partner program.</p>
+
+                    </div>
+               </aura:if>
+                <aura:if isTrue="{!v.renewal == 'RENEW'}">
+                    <div class="slds-text-heading_medium slds-text-align_center">
+
+                        <p>Thank you for updating your organization's information for the WeeCycle community partner program.</p>
+                        <br/>
+                        <p>You will receive an email with the updated information you submitted.</p>
+
+                    </div>
+                </aura:if>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+    </div>
+    <!-- end container -->
+
+    <!-- NAVIGATION BUTTONS -->
+    <div class="slds-float--right slds-p-top_large slds-p-bottom_large slds-p-horizontal_small">
+        <lightning:button label="OK" aura:id="nav_done"
+                          variant="brand" onclick="{!c.handleNavigation}"/>
+    </div>
+
+</aura:component>

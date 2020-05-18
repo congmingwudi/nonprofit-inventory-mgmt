@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NoTimesWork__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>The partner has indicated no preferred pick times.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The partner has indicated no preferred pick times.</inlineHelpText>
+    <label>No Times Work</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

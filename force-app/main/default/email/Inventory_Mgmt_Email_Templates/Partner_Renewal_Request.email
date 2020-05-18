@@ -1,0 +1,38 @@
+<messaging:emailTemplate subject="{!$Organization.Name} Community Partner renewal required for {!relatedTo.Name}" 
+   replyTo="{!$Organization.Division}"
+   recipientType="Contact" 
+   relatedToType="Account">
+   
+  <messaging:htmlEmailBody >
+    <html>
+      <body>       
+        <font face="arial" size="2">
+            <p>Dear {!recipient.FirstName},</p>
+            
+            <p>Please review your organization information and renew your {!$Organization.Name} Community Partner agreements at this link:</p>
+                    
+            <p>
+            <a href="https://everybottomcovered-sites.secure.force.com/partners/PartnerSignupFlow_LightningOutAppPage?id={!relatedTo.Id + '&renewal=RENEW'}">
+            https://everybottomcovered-sites.secure.force.com/partners/PartnerSignupFlow_LightningOutAppPage?id={!relatedTo.Id + '&renewal=RENEW'}
+            </a>
+            </p>
+             
+            <p>Thanks from all of us at {!$Organization.Name}!</p>
+                        
+            <p>
+            {!$Organization.Street}, {!$Organization.City}, {!$Organization.State} {!$Organization.PostalCode}<br></br>           
+            Email: {!$Organization.Division}
+            </p>
+            
+            <img src="
+            https://everybottomcovered--c.documentforce.com/servlet/servlet.ImageServer?id=0153i000000Avuw&oid=00D3i000000sQ2X&lastMod=1582952223000"/> 
+                       
+        </font>
+      </body>
+    </html>
+  </messaging:htmlEmailBody> 
+  <messaging:plainTextEmailBody >
+
+             
+  </messaging:plainTextEmailBody>  
+</messaging:emailTemplate>

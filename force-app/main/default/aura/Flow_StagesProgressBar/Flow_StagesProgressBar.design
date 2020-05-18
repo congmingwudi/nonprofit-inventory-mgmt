@@ -1,0 +1,5 @@
+<design:component>
+    <design:attribute name="stages" label="In:Stages" description="active stages"/>
+    <design:attribute name="currentStageIndex" label="In:Current Stage Index" description="index to the current stage"/>    
+    <design:attribute name="currentStage" label="Out:Current Stage" description="the current stage"/>
+</design:component>

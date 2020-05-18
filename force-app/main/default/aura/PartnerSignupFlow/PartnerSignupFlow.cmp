@@ -1,0 +1,18 @@
+<!--
+ - Created by ryan.cox on 2019-09-18.
+ -->
+
+<aura:component description="PartnerSignupFlow" implements="forceCommunity:availableForAllPageTypes">
+
+    <!-- input parameters -->
+    <aura:attribute name="recordId" type="String" access="global" /> <!-- used if component is launched from a record page or quick action -->
+    <aura:attribute name="partnerID" type="String" access="global" /> <!-- used if component is launched from a lightning out page -->
+    <aura:attribute name="renewal" type="String" access="global"  /> <!-- NEW or RENEW -->
+
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- partner signup flow -->
+    <lightning:flow aura:id="Partner_Signup"/>
+
+</aura:component>

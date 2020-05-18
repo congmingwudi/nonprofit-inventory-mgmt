@@ -1,0 +1,200 @@
+<!--
+ - Created by ryan.cox on 2019-09-18.
+ -->
+
+<aura:component description="PartnerSignup_Details" implements="lightning:availableForFlowScreens" access="global" controller="PartnerSignupController">
+
+    <!-- input parameters -->
+    <aura:attribute name="accountID" type="String" access="global" default=""/>
+    <aura:attribute name="renewal" type="String" access="global" default="NEW"/> <!-- NEW or RENEW -->
+    <aura:attribute name="formFirstTime" type="Boolean" access="global" default="true"/> <!-- for supporting arriving to this screen by going backward in the flow -->
+
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/>
+
+    <!-- private attributes -->
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+    <aura:attribute name="account" type="Account" access="global" default="{}"/>
+
+    <aura:attribute name="yesNo_options" type="List" default="[
+            {'label': 'Yes', 'value': 'Yes'},
+            {'label': 'No', 'value': 'No'}
+        ]"/>
+    <aura:attribute name="yesNoMaybe_options" type="List" default="[
+            {'label': 'Yes', 'value': 'Yes'},
+            {'label': 'No', 'value': 'No'},
+            {'label': 'Maybe', 'value': 'Maybe'}
+        ]"/>
+    <aura:attribute name="is501c3" type="String" default=""/>
+    <aura:attribute name="countyOptions" type="List" default="[]"/>
+    <aura:attribute name="countyValues" type="List" default="[]"/>
+    <aura:attribute name="acceptDonations" type="String" default=""/>
+    <aura:attribute name="canPickupItems" type="String" default=""/>
+    <aura:attribute name="fullAddress" type="String"/>
+    <aura:attribute name="mapURL" type="String"/>
+
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- container -->
+    <div style="font-size: 1.1em;">
+
+        <aura:if isTrue="{!v.errorMessage != ''}">
+            <lightning:layout>
+                <lightning:layoutItem flexibility="auto" padding="around-small" class="slds-align_absolute-center">
+                    <ui:outputText value="{!v.errorMessage}" class="errorMessage"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+
+        <aura:if isTrue="{! v.isLoading }">
+            <lightning:spinner alternativeText="Loading"/>
+        </aura:if>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+                <lightning:radioGroup aura:id="validate" name="radioGroup_is501c3"
+                                      label="Is your organization currently a registered 501(c)3 with the IRS?"
+                                      options="{! v.yesNo_options }"
+                                      value="{! v.is501c3 }"
+                                      type="radio"
+                                      required="true"
+                                      onchange="{!c.is501c3Changed}" />
+            </lightning:layoutItem>
+
+            <aura:if isTrue="{!v.is501c3 == 'No'}">
+
+                <lightning:layoutItem flexibility="auto" padding="around-small">
+                    <lightning:input aura:id="field" label="What type of organization are you?" required="true"
+                                     messageWhenValueMissing="Organization type is required."
+                                     value="{!v.account.Organization_Type__c}" />
+                </lightning:layoutItem>
+
+            </aura:if>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                    <lightning:input aura:id="field" label="Organization FEIN" required="true"
+                                 messageWhenValueMissing="Organization FEIN is required."
+                                 value="{!v.account.Tax_ID__c}"
+                                 pattern="[0-9]{2}-?[0-9]{7}"
+                                 messageWhenPatternMismatch="Tax ID must be in this format: 99-9999999" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+                <lightning:input aura:id="field" label="Organization Website" required="true"
+                                 messageWhenValueMissing="Organization Website is required."
+                                 value="{!v.account.Website}" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                <lightning:textarea aura:id="field" label="Organization Mission" required="true"
+                    messageWhenValueMissing="Organization Mission is required." value="{!v.account.Description}"
+                    class="mission" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+                 <lightning:dualListbox aura:id="field" name="countiesServed"
+                                       label= "Counties served by your organization"
+                                       sourceLabel="Colorado Counties"
+                                       selectedLabel="Selected"
+                                       options="{!v.countyOptions}"
+                                       value="{!v.countyValues}"
+                                       required="true"
+                                       />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                <lightning:input aura:id="field" label="What items and quantities do you need the most of for your clients?" required="true"
+                                 messageWhenValueMissing="Items most needed is required."
+                                 value="{!v.account.Items_Most_Needed__c}"
+                                 maxlength="255" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+                <lightning:radioGroup aura:id="validate" name="radioGroup_acceptDonations"
+                                      label="Are you able to accept donations of used baby gear from WeeCycle?"
+                                      options="{! v.yesNo_options }"
+                                      value="{! v.acceptDonations }"
+                                      type="radio"
+                                      required="true"
+                                      onchange="{!c.acceptDonationsChanged}" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                <lightning:input aura:id="field" label="Are there any restrictions on the items that you are able to accept? Please describe your restrictions." required="false"
+                                 value="{!v.account.Restrictions__c}" maxlength="255" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+                <lightning:radioGroup aura:id="validate" name="radioGroup_canPickupItems"
+                                      label="Do you have the ability to pick up the items you request for your clients from our warehouse?"
+                                      options="{! v.yesNo_options }"
+                                      value="{! v.canPickupItems }"
+                                      type="radio"
+                                      required="true"
+                                      onchange="{!c.canPickupItemsChanged}" />
+            </lightning:layoutItem>
+
+            <aura:if isTrue="{!and(v.mapURL,v.fullAddress)}">
+                <lightning:layoutItem flexibility="auto" padding="around-small">
+                    We are located at <a href="{!v.mapURL}" target="_new">{!v.fullAddress}</a>.
+                </lightning:layoutItem>
+            </aura:if>
+
+        </lightning:layout>
+
+        <lightning:layout>
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                <lightning:input aura:id="field" label="Is there anything else you would like to share about your organization with us?" required="false"
+                                 value="{!v.account.Other_Info__c}" maxlength="255" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+    </div>
+    <!-- end container -->
+
+    <!-- NAVIGATION BUTTONS -->
+    <div class="slds-float--right slds-p-top_large slds-p-bottom_large slds-p-horizontal_small">
+        <lightning:button label="Cancel" aura:id="nav_cancel"
+                          variant="neutral" onclick="{!c.handleNavigation}"/>
+        <lightning:button label="Demographics >>" aura:id="nav_demographics"
+                          variant="brand" onclick="{!c.handleNavigation}"/>
+    </div>
+
+</aura:component>

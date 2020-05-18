@@ -1,0 +1,149 @@
+<!--
+ - Created by ryan.cox on 2019-11-29.
+ -->
+
+<aura:component description="PartnerSignup_Agreement" implements="lightning:availableForFlowScreens" access="global" controller="PartnerSignupController">
+
+    <!-- input parameters -->
+    <aura:attribute name="partnerAgreementName" type="String" access="global" default=""/>
+    <aura:attribute name="partnerAgreementType" type="String" access="global" default="Agreement"/>
+    <aura:attribute name="renewal" type="String" access="global" default="NEW"/> <!-- NEW or RENEW -->
+    <aura:attribute name="submitButtonLabel" type="String" access="global" default="Submit Enrollment"/>
+
+    <!-- output parameters -->
+    <aura:attribute name="partnerAgreementID" type="String" access="global" default=""/>
+    <aura:attribute name="navigation" type="String" access="global"/>
+    <aura:attribute name="signerContact" type="Contact" access="global" default="{}"/>
+
+    <!-- private attributes -->
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+    <aura:attribute name="partnerAgreement" type="Partner_Agreement__c" default="{}"/>
+    <aura:attribute name="siteName" type="String" default=""/>
+    <aura:attribute name="downloadFileName" type="String" default=""/>
+    <aura:attribute name="signatureSaved" type="Boolean" default="false"/>
+
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- container -->
+    <div style="font-size: 1.1em">
+
+        <aura:if isTrue="{!and(v.partnerAgreementID != '',v.downloadFileName != '')}">
+            <lightning:layout horizontalAlign="end">
+                <lightning:layoutItem class="slds-p-around_small">
+                    <a href="{!'/' + v.siteName + '/apex/PartnerAgreementPDF?id=' + v.partnerAgreementID}" target="_blank" download="{!v.downloadFileName}">Download PDF</a>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+
+        <lightning:card title=" " class="slds-box">
+
+            <!-- header -->
+            <div style="text-align:center;font-weight:bold;font-size:1.5em">
+                <!-- logo -->
+
+                <!-- title -->
+                <p>{!v.partnerAgreement.Partner_Agreement_Template__r.Full_Title__c}</p>
+            </div>
+
+            <!-- body -->
+            <lightning:layout>
+
+                <lightning:layoutItem class="slds-p-around_large">
+
+                    <aura:if isTrue="{!!empty(v.partnerAgreement.Partner_Agreement_Template__r.Before_Behalf_Of__c)}">
+                        <lightning:layout>
+                            <lightning:layoutItem class="slds-p-bottom--large">
+                                <lightning:formattedRichText value="{!v.partnerAgreement.Partner_Agreement_Template__r.Before_Behalf_Of__c}" />
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </aura:if>
+
+                    <lightning:layout>
+                        <lightning:layoutItem class="slds-p-bottom--large">
+                            <aura:unescapedHtml value="{!v.partnerAgreement.Behalf_Of__c}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout>
+                        <lightning:layoutItem>
+                            <lightning:formattedRichText value="{!v.partnerAgreement.Partner_Agreement_Template__r.Body__c}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                </lightning:layoutItem>
+
+            </lightning:layout>
+
+            <!-- signature -->
+            <lightning:layout>
+
+                <lightning:layoutItem class="slds-p-horizontal--large">
+                    <c:captureSignature recordId="{!v.partnerAgreement.Id}"
+                                        errorMessage="{!v.errorMessage}"
+                                        onsignatureSavedEvent="{!c.signatureSavedChanged}"/>
+
+                    <aura:if isTrue="{! v.isLoading }">
+                        <lightning:spinner alternativeText="Loading"/>
+                    </aura:if>
+                </lightning:layoutItem>
+
+            </lightning:layout>
+
+            <lightning:layout>
+
+                <lightning:layoutItem class="slds-col--padded-around-large">
+
+                    <lightning:layout>
+                        <lightning:layoutItem size="1">NAME</lightning:layoutItem>
+                        <lightning:layoutItem>{!v.partnerAgreement.Partner_Executive_Director__r.Name}</lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout>
+                        <lightning:layoutItem size="1">AGENCY</lightning:layoutItem>
+                        <lightning:layoutItem>{!v.partnerAgreement.Partner__r.Name}</lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout>
+                        <lightning:layoutItem size="1">DATE</lightning:layoutItem>
+                        <lightning:layoutItem>
+                            <aura:if isTrue="{!v.partnerAgreement.Status__c == 'Draft'}">
+                                <lightning:formattedDateTime value="{!v.partnerAgreement.Date_Created__c}"
+                                                         year="numeric" month="numeric" day="numeric"/>
+                            </aura:if>
+                            <aura:if isTrue="{!or(v.partnerAgreement.Status__c == 'Partner Signed',v.partnerAgreement.Status__c == 'Completed')}">
+                                <lightning:formattedDateTime value="{!v.partnerAgreement.Date_Signed_By_Partner__c}"
+                                                         year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit"/>
+                            </aura:if>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                </lightning:layoutItem>
+
+            </lightning:layout>
+
+            <!-- footer -->
+            <div style="text-align:center;font-size:small">
+                <br/>
+                {!v.partnerAgreement.Partner_Agreement_Template__r.Footer__c}
+            </div>
+
+        </lightning:card>
+
+    </div> <!-- end container -->
+
+    <!-- NAVIGATION BUTTONS -->
+    <div class="slds-float--right slds-p-top_large slds-p-bottom_large slds-p-horizontal_small">
+        <aura:if isTrue="{!v.partnerAgreementType == 'Agreement'}">
+            <lightning:button label="Disclaimer and Release >>" aura:id="nav_disclaimer"
+                              variant="brand" onclick="{!c.handleNavigation}"/>
+        </aura:if>
+
+        <aura:if isTrue="{!v.partnerAgreementType == 'Waiver'}">
+            <lightning:button label="{!v.submitButtonLabel + ' >>'}" aura:id="nav_submit"
+                              variant="brand" onclick="{!c.handleNavigation}"/>
+        </aura:if>
+    </div>
+
+</aura:component>

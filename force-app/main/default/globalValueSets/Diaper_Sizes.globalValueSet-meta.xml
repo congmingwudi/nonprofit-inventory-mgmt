@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Newborn (Up to 8 lbs)</fullName>
+        <default>false</default>
+        <label>Newborn (Up to 8 lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Size 1 (8-14lbs)</fullName>
+        <default>false</default>
+        <label>Size 1 (8-14lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Size 2 (12-18lbs)</fullName>
+        <default>false</default>
+        <label>Size 2 (12-18lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Size 3 (16-28lbs)</fullName>
+        <default>false</default>
+        <label>Size 3 (16-28lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Size 4 (22-37bs)</fullName>
+        <default>false</default>
+        <label>Size 4 (22-37bs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Size 5 (27+lbs)</fullName>
+        <default>false</default>
+        <label>Size 5 (27+lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Size 6 (35+lbs)</fullName>
+        <default>false</default>
+        <label>Size 6 (35+lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Pull Ups (2T-3T)</fullName>
+        <default>false</default>
+        <label>Pull Ups (2T-3T)</label>
+    </customValue>
+    <customValue>
+        <fullName>Pull Ups (3T-4T)</fullName>
+        <default>false</default>
+        <label>Pull Ups (3T-4T)</label>
+    </customValue>
+    <customValue>
+        <fullName>Pull Ups (4T-5T)</fullName>
+        <default>false</default>
+        <label>Pull Ups (4T-5T)</label>
+    </customValue>
+    <customValue>
+        <fullName>Swim Diapers (Small 16-26lbs)</fullName>
+        <default>false</default>
+        <label>Swim Diapers (Small 16-26lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Swim Diapers (Medium 24-34 lbs)</fullName>
+        <default>false</default>
+        <label>Swim Diapers (Medium 24-34 lbs)</label>
+    </customValue>
+    <customValue>
+        <fullName>Swim Diapers (Large 32+ lbs)</fullName>
+        <default>false</default>
+        <label>Swim Diapers (Large 32+ lbs)</label>
+    </customValue>
+    <masterLabel>Diaper Sizes</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

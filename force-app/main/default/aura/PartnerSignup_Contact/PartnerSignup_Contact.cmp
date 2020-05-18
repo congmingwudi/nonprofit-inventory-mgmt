@@ -1,0 +1,247 @@
+<!--
+ - Created by ryan.cox on 2019-09-18.
+ -->
+
+<aura:component description="PartnerSignup_Contact" implements="lightning:availableForFlowScreens" access="global" controller="PartnerSignupController">
+
+    <!-- optional input parameters; only used for partner renewals -->
+    <aura:attribute name="accountID" type="String" access="global"/>
+    <aura:attribute name="renewal" type="String" access="global" default="NEW"/> <!-- NEW or RENEW -->
+
+    <!-- input/output parameters -->
+    <aura:attribute name="account" type="Account" access="global" default="{}"/>
+    <aura:attribute name="executiveDirector" type="Contact" access="global" default="{}"/>
+    <aura:attribute name="executiveDirector_orig" type="Contact" access="global" default="{}"/>
+    <aura:attribute name="primaryContact" type="Contact" access="global" default="{}"/>
+    <aura:attribute name="primaryContact_orig" type="Contact" access="global" default="{}"/>
+    <aura:attribute name="isExecutiveDirector" type="Boolean" default="false"/>
+
+    <!-- output parameters -->
+    <aura:attribute name="navigation" type="String" access="global"/>
+    <aura:attribute name="deviceType" type="String" access="global" default=""/>
+
+    <!-- private attributes -->
+    <aura:attribute name="isLoading" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String" default=""/>
+    <aura:attribute name="isPrimaryContact" type="Boolean" default="false"/>
+    <aura:attribute name="isUpdate" type="Boolean" default="false"/> <!-- indicates to create or update account -->
+
+    <aura:attribute name="yesNo_options" type="List" default="[
+            {'label': 'Yes', 'value': 'Yes'},
+            {'label': 'No', 'value': 'No'}
+        ]"/>
+    <aura:attribute name="isExecutiveDirectorValue" type="String" default=""/>
+    <aura:attribute name="isPrimaryContactValue" type="String" default=""/>
+
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- container -->
+    <div style="font-size: 1.1em">
+
+        <aura:if isTrue="{!v.errorMessage != ''}">
+            <lightning:layout>
+                <lightning:layoutItem flexibility="auto" padding="around-small" class="slds-align_absolute-center">
+                    <ui:outputText value="{!v.errorMessage}" class="errorMessage"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+
+        <aura:if isTrue="{! v.isLoading }">
+            <lightning:spinner alternativeText="Loading"/>
+        </aura:if>
+
+        <lightning:layout multipleRows="true">
+
+            <!-- partner organization -->
+            <lightning:layoutItem flexibility="auto" padding="around-small" >
+                <lightning:input aura:id="field" label="Organization Name" required="true"
+                                 messageWhenValueMissing="Organization Name is required." value="{!v.account.Name}"
+                                 onblur="{!c.organizationNameChanged}"
+                                 readonly="{! if(v.renewal == 'RENEW', true, false) }" />
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout multipleRows="true">
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+
+                <lightning:card title="EXECUTIVE DIRECTOR">
+
+                    <aura:set attribute="actions">
+                        <lightning:radioGroup aura:id="validate" name="radioGroup_isExecutiveDirector"
+                                              label="Are you the Executive Director?"
+                                              options="{! v.yesNo_options }"
+                                              value="{! v.isExecutiveDirectorValue }"
+                                              type="radio"
+                                              required="true"
+                                              onchange="{!c.isExecutiveDirectorChanged}" />
+                    </aura:set>
+
+                    <lightning:layout>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" label="First Name" required="true"
+                                messageWhenValueMissing="First Name is required."
+                                value="{!v.executiveDirector.FirstName}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" label="Last Name" required="true"
+                                messageWhenValueMissing="Last Name is required."
+                                value="{!v.executiveDirector.LastName}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" type="email" label="Email" required="true"
+                                messageWhenValueMissing="Email is required."
+                                value="{!v.executiveDirector.Email}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout multipleRows="true">
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" type="tel" label="Mobile Phone" required="true"
+                                messageWhenValueMissing="Mobile Phone is required."
+                                value="{!v.executiveDirector.MobilePhone}"
+                                pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}"
+                                messageWhenPatternMismatch="Please enter phone number in format: 999-999-9999" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" type="tel" label="Work Phone" required="false"
+                                value="{!v.executiveDirector.npe01__WorkPhone__c}"
+                                pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}"
+                                messageWhenPatternMismatch="Please enter phone number in format: 999-999-9999" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                </lightning:card>
+
+            </lightning:layoutItem>
+
+            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+
+                <lightning:card title="PRIMARY CONTACT">
+
+                    <aura:set attribute="actions">
+                        <lightning:radioGroup aura:id="validate" name="radioGroup_isPrimaryContact"
+                                              label="Is the Executive Director also the Primary Contact?"
+                                              options="{! v.yesNo_options }"
+                                              value="{! v.isPrimaryContactValue }"
+                                              type="radio"
+                                              required="true"
+                                              onchange="{!c.isPrimaryContactChanged}" />
+                    </aura:set>
+
+                    <aura:if isTrue="{!v.isPrimaryContact == false}">
+
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                <lightning:input aura:id="field" label="First Name" required="true"
+                                    messageWhenValueMissing="First Name is required."
+                                    value="{!v.primaryContact.FirstName}" />
+                            </lightning:layoutItem>
+                        </lightning:layout>
+
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                <lightning:input aura:id="field" label="Last Name" required="true"
+                                    messageWhenValueMissing="Last Name is required."
+                                    value="{!v.primaryContact.LastName}" />
+                            </lightning:layoutItem>
+                        </lightning:layout>
+
+                        <lightning:layout multipleRows="true">
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                <lightning:input aura:id="field" type="email" label="Email" required="true"
+                                    messageWhenValueMissing="Email is required."
+                                    value="{!v.primaryContact.Email}" />
+                            </lightning:layoutItem>
+                        </lightning:layout>
+
+                        <lightning:layout multipleRows="true">
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                <lightning:input aura:id="field" type="tel" label="Mobile Phone" required="true"
+                                    messageWhenValueMissing="Mobile Phone is required."
+                                    value="{!v.primaryContact.MobilePhone}"
+                                    pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}"
+                                    messageWhenPatternMismatch="Please enter phone number like this: 999-999-9999" />
+                            </lightning:layoutItem>
+                            <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                                <lightning:input aura:id="field" type="tel" label="Work Phone" required="false"
+                                    value="{!v.primaryContact.npe01__WorkPhone__c}"
+                                    pattern="[0-9]{3}-?[0-9]{3}-?[0-9]{4}"
+                                    messageWhenPatternMismatch="Please enter phone number like this: 999-999-9999" />
+                            </lightning:layoutItem>
+                        </lightning:layout>
+
+                    </aura:if>
+
+                </lightning:card>
+
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+        <lightning:layout multipleRows="true">
+
+            <lightning:layoutItem flexibility="auto" padding="around-small">
+
+                <lightning:card title="MAILING ADDRESS">
+
+                    <lightning:layout>
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" label="Address" required="true"
+                                messageWhenValueMissing="Mailing Address is required."
+                                value="{!v.account.BillingStreet}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                    <lightning:layout multipleRows="true">
+
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" label="City" required="true"
+                                messageWhenValueMissing="Mailing City is required."
+                                value="{!v.account.BillingCity}" />
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" label="State" required="true"
+                                messageWhenValueMissing="Mailing State is required."
+                                value="{!v.account.BillingState}"
+                                pattern="[A-Za-z]{2}"
+                                messageWhenPatternMismatch="Please enter a 2 letter state code"/>
+                        </lightning:layoutItem>
+
+                        <lightning:layoutItem flexibility="auto" padding="horizontal-small">
+                            <lightning:input aura:id="field" label="Zip Code" required="true"
+                                messageWhenValueMissing="Mailing Zip Code is required."
+                                value="{!v.account.BillingPostalCode}"
+                                pattern="[0-9]{5}"
+                                messageWhenPatternMismatch="Please enter a 5 digit zip code: 99999"/>
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+
+                </lightning:card>
+
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+    </div>
+    <!-- end container -->
+
+    <!-- NAVIGATION BUTTONS -->
+    <div class="slds-float--right slds-p-top_large slds-p-bottom_large slds-p-horizontal_small">
+        <lightning:button label="Cancel" aura:id="nav_cancel"
+                          variant="neutral" onclick="{!c.handleNavigation}"/>
+        <lightning:button label="Details >>" aura:id="nav_details"
+                          variant="brand" onclick="{!c.handleNavigation}"/>
+    </div>
+
+</aura:component>

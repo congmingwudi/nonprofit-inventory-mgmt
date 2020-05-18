@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Line_Items_Fulfilled__c</fullName>
+    <externalId>false</externalId>
+    <label>Line Items Fulfilled</label>
+    <summaryFilterItems>
+        <field>Gear_Order_Item__c.Fulfilled__c</field>
+        <operation>equals</operation>
+        <value>True</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Gear_Order_Item__c.Gear_Order__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quantity_Short__c</fullName>
+    <description>The number of items of this product that are needed to fulfill pending orders but are not available in the inventory. This field is calculated.</description>
+    <externalId>false</externalId>
+    <formula>IF(Quantity_Needed__c &gt; Quantity__c,  Quantity_Needed__c - Quantity__c, 0)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>The number of items of this product that are needed to fulfill pending orders but are not available in the inventory. This field is calculated.</inlineHelpText>
+    <label># Short</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

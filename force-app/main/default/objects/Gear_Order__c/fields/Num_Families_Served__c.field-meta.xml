@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Num_Families_Served__c</fullName>
+    <defaultValue>0</defaultValue>
+    <description>The number of families served with this gear order. This number is entered by the partner when submitting the order.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The number of families served with this gear order. This number is entered by the partner when submitting the order.</inlineHelpText>
+    <label># Families Served</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

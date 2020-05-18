@@ -1,0 +1,9 @@
+<aura:component >
+	
+    <aura:attribute name="product" type="Product__c" required="true"/>
+
+	<p class="slds-p-horizontal--small">
+		{!v.product.Name}
+    </p>
+
+</aura:component>

@@ -1,0 +1,44 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+                controller="DonationLocationController">
+	
+    <!-- private attributes -->
+    <aura:attribute name="locationList" type="List"/>
+    <aura:attribute name="mapZoomLevel" type="Integer" default="8" access="global"/>
+    <aura:attribute name="mapMarkers" type="Object"/>
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>
+
+    <!-- container -->
+    <div>
+
+        <div class="title slds-text-heading_large slds-p-horizontal--large">Donation Locations</div>
+
+        <lightning:layout>
+
+            <lightning:layoutItem size="3">
+
+                <aura:if isTrue="{!v.locationList}">
+
+                    <aura:iteration items="{!v.locationList}" var="location">
+                        <c:DonationLocation location="{!location}" />
+                    </aura:iteration>
+
+                </aura:if>
+
+            </lightning:layoutItem>
+
+            <lightning:layoutItem>
+
+                <aura:if isTrue="{!v.mapMarkers}">
+                    <lightning:map mapMarkers="{!v.mapMarkers}" markersTitle="Donation Locations" zoomLevel="{!v.zoomLevel}" showFooter="false"/>
+                </aura:if>
+
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+    </div>
+    <!-- end container -->
+    
+</aura:component>

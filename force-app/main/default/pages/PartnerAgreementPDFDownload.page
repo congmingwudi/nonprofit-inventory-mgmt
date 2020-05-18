@@ -1,0 +1,17 @@
+<!--
+ - Created by ryan.cox on 2019-11-29.
+ -->
+
+<apex:page id="PartnerAgreementPDFDownload" showHeader="false" controller="PartnerSignupController">
+
+    File is being downloaded. If it doesn't download, <a href="/apex/PartnerAgreementPDF?id={!pagePartnerAgreementID}" id="lnkDownload" target="_blank" download="WeeCycle Partner Agreement.pdf" onload="auto_download();">click here</a> to download file.
+
+    <script>
+    	function auto_download(){
+        	document.getElementById('lnkDownload').click();
+      };
+
+      //trigger auto-download
+    	window.setTimeout(auto_download, 10);
+    </script>
+</apex:page>

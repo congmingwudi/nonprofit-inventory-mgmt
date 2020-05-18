@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bulk_Demographics__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Bulk Demographics were entered for this gear order based on ethnicity percentages. This affects how email notifications are sent to the partner organization.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Bulk Demographics were entered for this gear order based on ethnicity percentages.</inlineHelpText>
+    <label>Bulk Demographics</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

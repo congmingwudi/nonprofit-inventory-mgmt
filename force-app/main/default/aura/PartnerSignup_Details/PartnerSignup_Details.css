@@ -1,0 +1,10 @@
+.THIS .slds-textarea {
+    height:100px !important;
+}
+
+.THIS .errorMessage {
+  font-weight: bold;
+  color: #ff0000;
+  padding: 10px;
+  border: 1px solid #ff0000;
+}

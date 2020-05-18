@@ -1,0 +1,21 @@
+<aura:component controller="ProductController">
+
+    <!-- private attributes -->
+    <aura:attribute name="categoryList" type="String[]"/>
+    <aura:attribute name="productMap" type="Map" default="{}"/>   
+    
+    <!-- handlers -->
+    <aura:handler name="init" action="{!c.init}" value="{!this}"/>    
+    
+    <!-- card -->
+    <aura:attribute name="title" type="Aura.Component[]">
+        <b>Products Available To Order</b>
+    </aura:attribute>
+        
+    <lightning:card title="{!v.title}">
+        <aura:iteration items="{!v.categoryList}" var="category">
+            <c:ProductCategory productMap="{!v.productMap}" category="{!category}"/>
+        </aura:iteration>
+    </lightning:card>
+    
+</aura:component>
